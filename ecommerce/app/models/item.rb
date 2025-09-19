@@ -11,5 +11,5 @@ class Item < ApplicationRecord
   validates :sale_type, inclusion: { in: %w[by_weight by_quantity] }
   validates :brand_id, :category_id, presence: true
 
-  enum sale_type: { by_weight: 0, by_quantity: 1 }
+  enum :sale_type, { by_weight: 0, by_quantity: 1 }, validate: true
 end
