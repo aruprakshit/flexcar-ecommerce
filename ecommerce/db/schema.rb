@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_19_083943) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_084253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -34,5 +34,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_083943) do
     t.integer "sale_type", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.uuid "brand_id", null: false
+    t.uuid "category_id", null: false
+    t.index ["brand_id"], name: "index_items_on_brand_id"
+    t.index ["category_id"], name: "index_items_on_category_id"
   end
+
+  add_foreign_key "items", "brands"
+  add_foreign_key "items", "categories"
 end
