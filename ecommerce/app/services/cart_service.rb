@@ -22,7 +22,7 @@ class CartService
       cart_item.final_price = promotion_result[:final_price]
     else
       cart_item.promotion = nil
-      cart_item.final_price = cart_item.subtotal
+      cart_item.final_price = cart_item.calculate_final_price
     end
 
     cart_item.save!
@@ -50,7 +50,7 @@ class CartService
         cart_item.final_price = promotion_result[:final_price]
       else
         cart_item.promotion = nil
-        cart_item.final_price = cart_item.subtotal
+        cart_item.final_price = cart_item.calculate_final_price
       end
       
       cart_item.save!
