@@ -7,5 +7,6 @@ alias dl-bexec='docker compose exec web bundle exec'
 alias dl-up='docker compose up --build -d --wait'
 alias dl-down='docker compose down'
 alias dl-logs-web='docker compose logs -f web'
+alias dl-exec='docker compose exec web'
 
-echo "Docker aliases are now active: dl-bexec, dl-up, dl-down, dl-logs-web"
+echo "Docker aliases are now active: dl-bexec, dl-up, dl-down, dl-logs-web, dl-exec"
