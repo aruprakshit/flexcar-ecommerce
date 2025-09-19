@@ -1,0 +1,78 @@
+<div class="container">
+  <!-- Page Header -->
+  <section class="section">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="title is-2 has-text-primary">Brands</h1>
+          <p class="subtitle is-4">Discover products from your favorite brands</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Brands Grid -->
+  <section class="section">
+    <div class="container">
+      <% if @brands.any? %>
+        <div class="columns is-multiline">
+          <% @brands.each do |brand| %>
+            <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+              <div class="card has-hover-shadow">
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-content">
+                      <h2 class="title is-4 has-text-primary">
+                        <%= link_to brand.name, brand_path(brand), class: "has-text-primary" %>
+                      </h2>
+                      <p class="subtitle is-6 has-text-grey-dark">
+                        <%= pluralize(brand.items.count, 'product') %> available
+                      </p>
+                    </div>
+                    <div class="media-right">
+                      <div class="tag is-primary is-medium">
+                        <%= brand.items.count %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="content">
+                    <p class="has-text-grey">
+                      Explore our collection of <%= brand.name %> products with the latest trends and best prices.
+                    </p>
+                  </div>
+                  
+                  <footer class="card-footer">
+                    <%= link_to "View Products", brand_path(brand), 
+                        class: "card-footer-item button is-primary is-fullwidth" %>
+                  </footer>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Empty State -->
+        <div class="has-text-centered">
+          <div class="box" style="max-width: 500px; margin: 0 auto;">
+            <span class="icon is-large has-text-grey-light">
+              <i class="fas fa-tags fa-3x"></i>
+            </span>
+            <h3 class="title is-4 has-text-grey">No Brands Available</h3>
+            <p class="subtitle is-6 has-text-grey">Check back later for new brand additions!</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<style>
+.has-hover-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.has-hover-shadow:hover {
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+}
+</style>

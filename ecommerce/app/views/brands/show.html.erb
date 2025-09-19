@@ -1,0 +1,177 @@
+<div class="container">
+  <!-- Brand Header -->
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><%= link_to "Home", root_path %></li>
+          <li><%= link_to "Brands", brands_path %></li>
+          <li class="is-active"><a href="#" aria-current="page"><%= @brand.name %></a></li>
+        </ul>
+      </nav>
+      
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="title is-2 has-text-primary"><%= @brand.name %></h1>
+          <p class="subtitle is-4">Discover our collection of <%= @brand.name %> products</p>
+          
+          <!-- Brand Stats -->
+          <div class="tags">
+            <span class="tag is-primary is-medium">
+              <span class="icon">
+                <i class="fas fa-box"></i>
+              </span>
+              <span><%= pluralize(@items.count, 'product') %></span>
+            </span>
+            
+            <% if @items.any? %>
+              <% active_promotions = @items.joins(:promotions).where(promotions: { start_time: ..Time.current, end_time: [nil, Time.current..] }).distinct.count %>
+              <% if active_promotions > 0 %>
+                <span class="tag is-success is-medium">
+                  <span class="icon">
+                    <i class="fas fa-tag"></i>
+                  </span>
+                  <span><%= pluralize(active_promotions, 'promotion') %> active</span>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="section">
+    <div class="container">
+      <% if @items.any? %>
+        <!-- Filter/Sort Bar -->
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h2 class="title is-4">Products</h2>
+            </div>
+            <div class="level-item">
+              <span class="tag is-light">
+                Showing <%= @items.count %> <%= pluralize(@items.count, 'product') %>
+              </span>
+            </div>
+          </div>
+          
+          <div class="level-right">
+            <div class="level-item">
+              <div class="field has-addons">
+                <div class="control">
+                  <span class="select">
+                    <select id="sort-select">
+                      <option value="name">Sort by Name</option>
+                      <option value="price_asc">Price: Low to High</option>
+                      <option value="price_desc">Price: High to Low</option>
+                    </select>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="columns is-multiline" id="items-grid">
+          <% @items.each do |item| %>
+            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
+              <%= render 'items/item_card', item: item %>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Load More Button (for future pagination) -->
+        <div class="has-text-centered" style="margin-top: 2rem;">
+          <button class="button is-primary is-large" disabled>
+            <span class="icon">
+              <i class="fas fa-check"></i>
+            </span>
+            <span>All products loaded</span>
+          </button>
+        </div>
+        
+      <% else %>
+        <!-- Empty State -->
+        <div class="has-text-centered">
+          <div class="box" style="max-width: 500px; margin: 0 auto;">
+            <span class="icon is-large has-text-grey-light">
+              <i class="fas fa-box-open fa-3x"></i>
+            </span>
+            <h3 class="title is-4 has-text-grey">No Products Available</h3>
+            <p class="subtitle is-6 has-text-grey">
+              <%= @brand.name %> doesn't have any products yet. Check back later!
+            </p>
+            <div class="buttons is-centered" style="margin-top: 1rem;">
+              <%= link_to "Browse Other Brands", brands_path, class: "button is-primary" %>
+              <%= link_to "View All Products", items_path, class: "button is-light" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<!-- JavaScript for sorting functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sortSelect = document.getElementById('sort-select');
+  const itemsGrid = document.getElementById('items-grid');
+  
+  if (sortSelect && itemsGrid) {
+    sortSelect.addEventListener('change', function() {
+      const items = Array.from(itemsGrid.children);
+      
+      items.sort(function(a, b) {
+        const aName = a.querySelector('.title').textContent.toLowerCase();
+        const bName = b.querySelector('.title').textContent.toLowerCase();
+        const aPrice = parseFloat(a.querySelector('.price').textContent.replace('$', ''));
+        const bPrice = parseFloat(b.querySelector('.price').textContent.replace('$', ''));
+        
+        switch(this.value) {
+          case 'name':
+            return aName.localeCompare(bName);
+          case 'price_asc':
+            return aPrice - bPrice;
+          case 'price_desc':
+            return bPrice - aPrice;
+          default:
+            return 0;
+        }
+      });
+      
+      // Clear and re-append sorted items
+      itemsGrid.innerHTML = '';
+      items.forEach(item => itemsGrid.appendChild(item));
+    });
+  }
+});
+</script>
+
+<style>
+.card {
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.level {
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+</style>
