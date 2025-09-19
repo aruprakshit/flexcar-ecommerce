@@ -12,4 +12,8 @@ class Item < ApplicationRecord
   validates :brand_id, :category_id, presence: true
 
   enum :sale_type, { by_weight: 0, by_quantity: 1 }, validate: true
+
+  def by_weight?
+    sale_type == 'by_weight'
+  end
 end

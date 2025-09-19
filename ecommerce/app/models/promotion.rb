@@ -4,7 +4,7 @@ class Promotion < ApplicationRecord
   validates_with PromotionValidator
 
   validates :name, presence: true
-  validates :discount_value, presence: true, numericality: { greater_than: 0 }
+  validates :discount_value, presence: true, numericality: { greater_than: 0 }, unless: :bogo_or_weight_threshold?
   validates :start_time, presence: true
   validates :buy_quantity, presence: true, if: :bogo?
   validates :get_quantity, presence: true, if: :bogo?
@@ -18,4 +18,22 @@ class Promotion < ApplicationRecord
     bogo: 2, 
     weight_threshold: 3 
   }, validate: true
+
+
+  scope :active, -> { where('start_time <= ? AND (end_time IS NULL OR end_time >= ?)', Time.current, Time.current) }
+  scope :for_item, ->(item) { where(promotionable: item) }
+  scope :for_category, ->(category) { where(promotionable: category) }
+  scope :for_brand, ->(brand) { where(promotionable: brand) }
+
+  def bogo?
+    promotion_type == 'bogo'
+  end
+
+  def weight_threshold?
+    promotion_type == 'weight_threshold'
+  end
+
+  def bogo_or_weight_threshold?
+    bogo? || weight_threshold?
+  end
 end
