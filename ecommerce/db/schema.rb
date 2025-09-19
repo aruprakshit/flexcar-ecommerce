@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_19_084253) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_084736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -38,6 +38,24 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_084253) do
     t.uuid "category_id", null: false
     t.index ["brand_id"], name: "index_items_on_brand_id"
     t.index ["category_id"], name: "index_items_on_category_id"
+  end
+
+  create_table "promotions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name"
+    t.integer "promotion_type"
+    t.decimal "discount_value", precision: 10, scale: 2, null: false
+    t.datetime "start_time", null: false
+    t.datetime "end_time"
+    t.string "promotionable_type", null: false
+    t.uuid "promotionable_id", null: false
+    t.integer "buy_quantity"
+    t.integer "get_quantity"
+    t.decimal "get_discount_percentage", precision: 5, scale: 2
+    t.decimal "weight_threshold", precision: 10, scale: 2
+    t.decimal "weight_discount_percentage", precision: 5, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["promotionable_type", "promotionable_id"], name: "index_promotions_on_promotionable"
   end
 
   add_foreign_key "items", "brands"
