@@ -4,33 +4,45 @@ FROM ruby:3.2.2
 # Install dependencies
 RUN apt-get update -qq && apt-get install -y build-essential libpq-dev postgresql-client curl
 
-# Install Node.js (required for cssbundling-rails)
+# Install Node.js and Yarn (required for cssbundling-rails)
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
   apt-get install -y nodejs
 
-# Create a non-root user
-RUN useradd -m -s /bin/bash rails
-USER rails
+# Install Yarn
+RUN npm install -g yarn
+
+# Create a non-root user with the same UID and GID as your host user
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+RUN addgroup --gid $GROUP_ID rails
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID rails
 
 # Set working directory
-WORKDIR /home/rails/app
-RUN chown -R rails:rails /home/rails/app
-RUN mkdir -p /home/rails/app/bundle_cache && chown -R rails:rails /home/rails/app/bundle_cache
-ENV BUNDLE_PATH=/home/rails/app/bundle_cache
+WORKDIR /app
 
-RUN bundle config set --local path '/home/rails/app/bundle_cache'
+# Ensure the bundle directory exists and set correct permissions
+RUN mkdir -p /app/vendor/bundle && chown -R rails:rails /app
+ENV BUNDLE_PATH=/app/vendor/bundle
 
-# Install Bundler
-RUN gem install bundler
+# Update RubyGems and install Bundler
+RUN gem update --system && \
+  gem install bundler
 
-# Copy Gemfile and Gemfile.lock (if they exist)
-COPY Gemfile* ./
+# Copy Gemfile and Gemfile.lock (if it exists)
+COPY --chown=rails:rails Gemfile Gemfile.lock* ./
+
+# Switch to the non-root user
+USER rails
+
+# Install dependencies
+RUN bundle config set --local path '/app/vendor/bundle' && \
+  bundle install
 
 # Copy the rest of the application code
-COPY . .
+COPY --chown=rails:rails . .
 
 # Expose port 3000
 EXPOSE 3000
 
-# Start the server
-CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]
+# Start the server directly without entrypoint script
+CMD ["bash", "-c", "rm -f tmp/pids/server.pid && bundle exec rails server -b 0.0.0.0"]
