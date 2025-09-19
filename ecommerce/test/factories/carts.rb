@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :cart do
-    session_id { Faker::Alphanumeric.alphanumeric(number: 10) }
+    sequence(:session_id) { |n| "session_#{n}_#{SecureRandom.hex(4)}" }
   end
 end
