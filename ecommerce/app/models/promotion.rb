@@ -1,6 +1,8 @@
 class Promotion < ApplicationRecord
   belongs_to :promotionable, polymorphic: true
 
+  validates_with PromotionValidator
+
   validates :name, presence: true
   validates :discount_value, presence: true, numericality: { greater_than: 0 }
   validates :start_time, presence: true

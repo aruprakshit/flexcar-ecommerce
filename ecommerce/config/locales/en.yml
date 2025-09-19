@@ -29,3 +29,19 @@
 
 en:
   hello: "Hello world"
+  
+  activerecord:
+    errors:
+      models:
+        promotion:
+          attributes:
+            buy_quantity:
+              bogo_required: "must be present and greater than 0 for BOGO promotions"
+            get_quantity:
+              bogo_required: "must be present and greater than 0 for BOGO promotions"
+            get_discount_percentage:
+              bogo_range: "must be between 0 and 100 for BOGO promotions"
+            weight_threshold:
+              weight_required: "must be present and greater than 0 for weight threshold promotions"
+            weight_discount_percentage:
+              weight_range: "must be between 0 and 100 for weight threshold promotions"
