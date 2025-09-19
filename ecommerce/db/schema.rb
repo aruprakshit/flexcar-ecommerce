@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_19_091715) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_19_101720) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -19,6 +19,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_091715) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "idx_ecommerce_0001", unique: true
   end
 
   create_table "cart_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -29,6 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_091715) do
     t.decimal "final_price", precision: 10, scale: 2, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cart_id", "item_id"], name: "idx_ecommerce_0006", unique: true
     t.index ["cart_id"], name: "index_cart_items_on_cart_id"
     t.index ["item_id"], name: "index_cart_items_on_item_id"
     t.index ["promotion_id"], name: "index_cart_items_on_promotion_id"
@@ -38,12 +40,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_091715) do
     t.string "session_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["session_id"], name: "idx_ecommerce_0005", unique: true
   end
 
   create_table "categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "idx_ecommerce_0002", unique: true
   end
 
   create_table "items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -74,7 +78,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_19_091715) do
     t.decimal "weight_discount_percentage", precision: 5, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["promotionable_type", "promotionable_id"], name: "idx_ecommerce_0003"
     t.index ["promotionable_type", "promotionable_id"], name: "index_promotions_on_promotionable"
+    t.index ["start_time", "end_time"], name: "idx_ecommerce_0004"
   end
 
   add_foreign_key "cart_items", "carts"
