@@ -1,0 +1,94 @@
+<div class="container">
+  <div class="section">
+    <h1 class="title">Shopping Cart</h1>
+    
+    <% if @cart_items.any? %>
+      <div class="columns">
+        <div class="column is-8">
+          <% @cart_items.each do |cart_item| %>
+            <div class="card mb-4">
+              <div class="card-content">
+                <div class="columns is-vcentered">
+                  <div class="column is-8">
+                    <h3 class="subtitle is-4"><%= cart_item.item.name %></h3>
+                    <p class="has-text-grey"><%= cart_item.item.description %></p>
+                    <p class="has-text-grey-light">
+                      <%= cart_item.item.brand.name %> • <%= cart_item.item.category.name %>
+                    </p>
+                    
+                    <% if cart_item.promotion %>
+                      <span class="tag is-success">
+                        <%= cart_item.promotion.name %> applied!
+                      </span>
+                    <% end %>
+                  </div>
+                  
+                  <div class="column is-2">
+                    <div class="field has-addons">
+                      <%= form_with url: cart_update_item_path, method: :patch, local: true do |form| %>
+                        <%= form.hidden_field :item_id, value: cart_item.item.id %>
+                        <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
+                        <%= form.submit "Update", class: "button is-small is-info" %>
+                      <% end %>
+                    </div>
+                  </div>
+                  
+                  <div class="column is-1">
+                    <%= form_with url: cart_remove_item_path, method: :delete, local: true do |form| %>
+                      <%= form.hidden_field :item_id, value: cart_item.item.id %>
+                      <%= form.submit "Remove", class: "button is-small is-danger" %>
+                    <% end %>
+                  </div>
+                  
+                  <div class="column is-1">
+                    <div class="has-text-right">
+                      <p class="is-size-5 has-text-weight-bold">$<%= cart_item.final_price.round(2) %></p>
+                      <% if cart_item.final_price != cart_item.subtotal %>
+                        <p class="has-text-grey is-size-7">
+                          <s>$<%= cart_item.subtotal.round(2) %></s>
+                        </p>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+        
+        <div class="column is-4">
+          <div class="card">
+            <div class="card-content">
+              <h3 class="subtitle is-4">Order Summary</h3>
+              
+              <% total_original = @cart_items.sum(&:subtotal) %>
+              <% total_final = @cart_items.sum(&:final_price) %>
+              <% total_discount = total_original - total_final %>
+              
+              <div class="has-text-right">
+                <p>Subtotal: $<%= total_original.round(2) %></p>
+                <% if total_discount > 0 %>
+                  <p class="has-text-success">Discount: -$<%= total_discount.round(2) %></p>
+                <% end %>
+                <hr>
+                <p class="is-size-4 has-text-weight-bold">Total: $<%= total_final.round(2) %></p>
+              </div>
+              
+              <div class="mt-4">
+                <button class="button is-primary is-fullwidth is-large">
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <div class="has-text-centered">
+        <h2 class="subtitle is-3">Your cart is empty</h2>
+        <p class="has-text-grey">Add some items to get started!</p>
+        <%= link_to "Browse Products", items_path, class: "button is-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

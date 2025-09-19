@@ -39,7 +39,7 @@
           <div>
             <% if item.promotions.active.any? %>
               <span class="has-text-grey-light has-text-decoration-line-through">$<%= item.price %></span>
-              <span class="has-text-danger has-text-weight-bold">$<%= calculate_discounted_price(item) %></span>
+              <span class="has-text-danger has-text-weight-bold">$<%= item.calculate_discounted_price %></span>
             <% else %>
               <span class="has-text-weight-bold">$<%= item.price %></span>
             <% end %>
