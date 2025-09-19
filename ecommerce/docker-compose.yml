@@ -1,0 +1,29 @@
+services:
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=flexcar_development
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+
+    # command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "bundle install && tail -f /dev/null"
+    volumes:
+      - .:/home/rails/app
+      - bundle_cache:/home/rails/app/bundle_cache
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://postgres:password@db:5432/flexcar_development
+      - RAILS_ENV=development
+volumes:
+  postgres_data:
+  bundle_cache:
