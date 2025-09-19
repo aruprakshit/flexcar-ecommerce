@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "App" %></title>
+    <title><%= content_for(:title) || "Flexcar E-commerce" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
@@ -23,6 +23,78 @@
   </head>
 
   <body>
-    <%= yield %>
+    <!-- Navigation Header -->
+    <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+      <div class="container">
+        <div class="navbar-brand">
+          <%= link_to "Flexcar", root_path, class: "navbar-item has-text-weight-bold is-size-4" %>
+          
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+        
+        <div id="navbarMenu" class="navbar-menu">
+          <div class="navbar-start">
+            <%= link_to "Products", items_path, class: "navbar-item" %>
+            <%= link_to "Categories", categories_path, class: "navbar-item" %>
+            <%= link_to "Brands", brands_path, class: "navbar-item" %>
+          </div>
+          
+          <div class="navbar-end">
+            <div class="navbar-item">
+              <%= link_to cart_path, class: "button is-primary is-inverted" do %>
+                <span class="icon">
+                  <i class="fas fa-shopping-cart"></i>
+                </span>
+                <span>Cart</span>
+                <span class="tag is-danger is-small" id="cart-badge">
+                  <%= cart_items_count %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <% if notice %>
+      <div class="notification is-success is-light">
+        <button class="delete"></button>
+        <%= notice %>
+      </div>
+    <% end %>
+    
+    <% if alert %>
+      <div class="notification is-danger is-light">
+        <button class="delete"></button>
+        <%= alert %>
+      </div>
+    <% end %>
+
+    <!-- Main Content -->
+    <main class="section">
+      <div class="container">
+        <%= yield %>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer has-background-dark has-text-light">
+      <div class="container">
+        <div class="columns">
+          <div class="column is-half">
+            <h5 class="title is-5 has-text-light">Flexcar E-commerce</h5>
+            <p>Your trusted online shopping destination</p>
+          </div>
+          <div class="column is-half has-text-right">
+            <p>&copy; 2024 Flexcar. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

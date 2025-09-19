@@ -1,0 +1,55 @@
+<!-- Hero Section -->
+<section class="hero is-primary is-medium">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column is-8">
+          <h1 class="title is-1 has-text-weight-bold">Welcome to Flexcar</h1>
+          <h2 class="subtitle is-4">Discover amazing products with great promotions!</h2>
+          <%= link_to "Shop Now", items_path, class: "button is-light is-large" %>
+        </div>
+        <div class="column is-4 has-text-centered">
+          <i class="fas fa-shopping-bag fa-10x has-text-white-ter"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Categories -->
+<section class="section">
+  <div class="container">
+    <h2 class="title is-2 has-text-centered mb-6">Shop by Category</h2>
+    <div class="columns is-multiline">
+      <% @categories.each do |category| %>
+        <div class="column is-3">
+          <%= link_to category_path(category), class: "has-text-dark" do %>
+            <div class="card">
+              <div class="card-content has-text-centered">
+                <div class="content">
+                  <i class="fas fa-tag fa-3x has-text-primary mb-4"></i>
+                  <h4 class="title is-4"><%= category.name %></h4>
+                  <p class="subtitle is-6 has-text-grey"><%= pluralize(category.items.count, 'item') %></p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Items -->
+<section class="section">
+  <div class="container">
+    <h2 class="title is-2 has-text-centered mb-6">Featured Products</h2>
+    <div class="columns is-multiline">
+      <% @featured_items.each do |item| %>
+        <div class="column is-3">
+          <%= render 'items/item_card', item: item %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
