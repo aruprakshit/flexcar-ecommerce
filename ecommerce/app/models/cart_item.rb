@@ -19,25 +19,14 @@ class CartItem < ApplicationRecord
   def calculate_final_price
     return subtotal unless promotion
 
-    case promotion.promotion_type
-    when 'percentage'
-      subtotal * (1 - promotion.discount_value / 100.0)
-    when 'flat_fee'
-      [subtotal - promotion.discount_value, 0].max
-    when 'bogo'
-      # Simplified BOGO calculation - should use PromotionService for accurate calculation
-      subtotal
-    when 'weight_threshold'
-      # Simplified weight threshold calculation - should use PromotionService for accurate calculation
-      subtotal
-    else
-      subtotal
-    end
+    # Use PromotionService for accurate calculation
+    promotion_service = PromotionService.new(self)
+    result = promotion_service.send(:apply_promotion, promotion)
+    result[:final_price]
   end
 
   def recalculate_final_price!
     self.final_price = calculate_final_price
     save!
   end
-
 end

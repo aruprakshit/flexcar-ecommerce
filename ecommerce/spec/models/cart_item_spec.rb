@@ -76,6 +76,29 @@ RSpec.describe CartItem, type: :model do
           expect(cart_item.calculate_final_price).to eq(250.0)
         end
       end
+
+      context 'with BOGO promotion' do
+        let(:item) { create(:item, price: 100.0) }
+        let(:promotion) { create(:promotion, promotion_type: 'bogo', buy_quantity: 2, get_quantity: 1, get_discount_percentage: 100) }
+        let(:cart_item) { create(:cart_item, item: item, quantity: 4, promotion: promotion) }
+
+        it 'applies BOGO discount correctly' do
+          # 4 items, 2 sets of BOGO (buy 2 get 1 free), so 2 free items
+          # Original: 4 * 100 = 400, Discount: 2 * 100 = 200, Final: 200
+          expect(cart_item.calculate_final_price).to eq(200.0)
+        end
+      end
+
+      context 'with weight_threshold promotion' do
+        let(:item) { create(:item, sale_type: 'by_weight', price: 10.0) }
+        let(:promotion) { create(:promotion, promotion_type: 'weight_threshold', weight_threshold: 5.0, weight_discount_percentage: 25) }
+        let(:cart_item) { create(:cart_item, item: item, quantity: 6.0, promotion: promotion) }
+
+        it 'applies weight threshold discount correctly' do
+          # 6kg at 10/kg = 60, 25% discount = 15, Final: 45
+          expect(cart_item.calculate_final_price).to eq(45.0)
+        end
+      end
     end
 
     describe '#recalculate_final_price!' do
