@@ -19,10 +19,8 @@ class CartItem < ApplicationRecord
   def calculate_final_price
     return subtotal unless promotion
 
-    # Use PromotionService for accurate calculation
     promotion_service = PromotionService.new(self)
-    result = promotion_service.send(:apply_promotion, promotion)
-    result[:final_price]
+    promotion_service.calculate_final_price_for_promotion(promotion)
   end
 
   def recalculate_final_price!

@@ -13,6 +13,13 @@ class PromotionService
     apply_promotion(best_promotion) if best_promotion
   end
 
+  def calculate_final_price_for_promotion(promotion)
+    return @item.price * @quantity unless promotion
+    
+    result = apply_promotion(promotion)
+    result[:final_price]
+  end
+
   private
 
   def find_applicable_promotions
