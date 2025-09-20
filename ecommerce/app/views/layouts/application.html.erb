@@ -50,9 +50,12 @@
                   <i class="fas fa-shopping-cart"></i>
                 </span>
                 <span>Cart</span>
-                <span class="tag is-danger is-small" id="cart-badge">
-                  <%= current_cart.cart_items.sum(:quantity) %>
-                </span>
+                <% cart_count = current_cart.cart_items.sum(:quantity) %>
+                <% if cart_count > 0 %>
+                  <span class="tag is-danger is-small ml-2" id="cart-badge">
+                    <%= cart_count %>
+                  </span>
+                <% end %>
               <% end %>
             </div>
           </div>

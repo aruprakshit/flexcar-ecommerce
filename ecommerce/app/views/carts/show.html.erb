@@ -1,93 +1,220 @@
-<div class="container">
-  <div class="section">
-    <h1 class="title">Shopping Cart</h1>
-    
+<!-- Cart Header -->
+<div class="hero is-light">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="title is-2 has-text-dark">Shopping Cart</h1>
+          <p class="subtitle is-5 has-text-grey-dark">
+            Review your items and proceed to checkout
+          </p>
+        </div>
+        <div class="column is-narrow">
+          <%= link_to "Continue Shopping", items_path, class: "button is-primary is-outlined" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="section">
+  <div class="container">
     <% if @cart_items.any? %>
-      <div class="columns">
+      <div class="columns is-desktop">
+        <!-- Cart Items Column -->
         <div class="column is-8">
-          <% @cart_items.each do |cart_item| %>
-            <div class="card mb-4">
-              <div class="card-content">
-                <div class="columns is-vcentered">
-                  <div class="column is-8">
-                    <h3 class="subtitle is-4"><%= cart_item.item.name %></h3>
-                    <p class="has-text-grey"><%= cart_item.item.description %></p>
-                    <p class="has-text-grey-light">
-                      <%= cart_item.item.brand.name %> • <%= cart_item.item.category.name %>
+          <div class="box">
+            <h2 class="subtitle is-4 has-text-weight-semibold mb-4">Cart Items</h2>
+            
+            <% @cart_items.each do |cart_item| %>
+              <div class="media mb-5" style="border-bottom: 1px solid #f5f5f5; padding-bottom: 1.5rem;">
+                <div class="media-left">
+                  <figure class="image is-64x64">
+                    <div class="has-background-light is-flex is-align-items-center is-justify-content-center" style="border-radius: 8px; height: 100%;">
+                      <i class="fas fa-image has-text-grey"></i>
+                    </div>
+                  </figure>
+                </div>
+                
+                <div class="media-content">
+                  <div class="content">
+                    <h4 class="title is-5 mb-2"><%= cart_item.item.name %></h4>
+                    <p class="subtitle is-6 has-text-grey mb-2">
+                      <%= truncate(cart_item.item.description, length: 100) %>
                     </p>
                     
-                    <% if cart_item.promotion %>
-                      <span class="tag is-success">
-                        <%= cart_item.promotion.name %> applied!
+                    <div class="tags mb-3">
+                      <span class="tag is-light">
+                        <i class="fas fa-tag mr-1"></i>
+                        <%= cart_item.item.category.name %>
                       </span>
-                    <% end %>
-                  </div>
-                  
-                  <div class="column is-2">
-                    <div class="field has-addons">
-                      <%= form_with url: update_item_quantity_cart_path, method: :patch, local: true do |form| %>
-                        <%= form.hidden_field :item_id, value: cart_item.item.id %>
-                        <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
-                        <%= form.submit "Update", class: "button is-small is-info" %>
+                      <span class="tag is-light">
+                        <i class="fas fa-star mr-1"></i>
+                        <%= cart_item.item.brand.name %>
+                      </span>
+                      <% if cart_item.promotion %>
+                        <span class="tag is-success">
+                          <i class="fas fa-tag mr-1"></i>
+                          <%= cart_item.promotion.name %>
+                        </span>
                       <% end %>
                     </div>
-                  </div>
-                  
-                  <div class="column is-1">
-                    <%= form_with url: remove_item_cart_path, method: :delete, local: true do |form| %>
-                      <%= form.hidden_field :item_id, value: cart_item.item.id %>
-                      <%= form.submit "Remove", class: "button is-small is-danger" %>
-                    <% end %>
-                  </div>
-                  
-                  <div class="column is-1">
-                    <div class="has-text-right">
-                      <p class="is-size-5 has-text-weight-bold">$<%= cart_item.final_price.round(2) %></p>
-                      <% if cart_item.final_price != cart_item.subtotal %>
-                        <p class="has-text-grey is-size-7">
-                          <s>$<%= cart_item.subtotal.round(2) %></s>
-                        </p>
-                      <% end %>
+                    
+                    <!-- Price and Actions -->
+                    <div class="level">
+                      <div class="level-left">
+                        <div class="level-item">
+                          <div>
+                            <% if cart_item.final_price != cart_item.subtotal %>
+                              <span class="has-text-grey-light has-text-decoration-line-through">
+                                $<%= cart_item.subtotal.round(2) %>
+                              </span>
+                              <span class="has-text-danger has-text-weight-bold is-size-5">
+                                $<%= cart_item.final_price.round(2) %>
+                              </span>
+                            <% else %>
+                              <span class="has-text-weight-bold is-size-5">
+                                $<%= cart_item.final_price.round(2) %>
+                              </span>
+                            <% end %>
+                            <small class="has-text-grey">
+                              /<%= cart_item.item.sale_type == 'by_weight' ? 'lb' : 'each' %>
+                            </small>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="level-right">
+                        <div class="level-item">
+                          <div class="field has-addons">
+                            <%= form_with url: update_item_quantity_cart_path, method: :patch, local: true, class: "mr-3" do |form| %>
+                              <%= form.hidden_field :item_id, value: cart_item.item.id %>
+                              <div class="control">
+                                <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
+                              </div>
+                              <div class="control">
+                                <%= form.submit "Update", class: "button is-info" %>
+                              </div>
+                            <% end %>
+                            
+                            <%= form_with url: remove_item_cart_path, method: :delete, local: true do |form| %>
+                              <%= form.hidden_field :item_id, value: cart_item.item.id %>
+                              <%= form.submit "Remove", class: "button is-danger is-outlined" %>
+                            <% end %>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          <% end %>
+            <% end %>
+          </div>
         </div>
         
+        <!-- Order Summary Column -->
         <div class="column is-4">
-          <div class="card">
-            <div class="card-content">
-              <h3 class="subtitle is-4">Order Summary</h3>
-              
-              <% total_original = @cart_items.sum(&:subtotal) %>
-              <% total_final = @cart_items.sum(&:final_price) %>
-              <% total_discount = total_original - total_final %>
-              
-              <div class="has-text-right">
-                <p>Subtotal: $<%= total_original.round(2) %></p>
-                <% if total_discount > 0 %>
-                  <p class="has-text-success">Discount: -$<%= total_discount.round(2) %></p>
-                <% end %>
-                <hr>
-                <p class="is-size-4 has-text-weight-bold">Total: $<%= total_final.round(2) %></p>
+          <div class="box">
+            <h3 class="subtitle is-4 has-text-weight-semibold mb-4">Order Summary</h3>
+            
+            <% total_original = @cart_items.sum(&:subtotal) %>
+            <% total_final = @cart_items.sum(&:final_price) %>
+            <% total_discount = total_original - total_final %>
+            <% item_count = @cart_items.sum(&:quantity) %>
+            
+            <!-- Order Details -->
+            <div class="content">
+              <div class="level">
+                <div class="level-left">
+                  <div class="level-item">
+                    <span class="has-text-grey">Items (<%= item_count %>)</span>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <span class="has-text-weight-semibold">$<%= total_original.round(2) %></span>
+                  </div>
+                </div>
               </div>
               
-              <div class="mt-4">
-                <button class="button is-primary is-fullwidth is-large">
-                  Proceed to Checkout
-                </button>
+              <% if total_discount > 0 %>
+                <div class="level">
+                  <div class="level-left">
+                    <div class="level-item">
+                      <span class="has-text-success has-text-weight-semibold">Discount</span>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <div class="level-item">
+                      <span class="has-text-success has-text-weight-semibold">-$<%= total_discount.round(2) %></span>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+              
+              <hr>
+              
+              <div class="level">
+                <div class="level-left">
+                  <div class="level-item">
+                    <span class="title is-5">Total</span>
+                  </div>
+                </div>
+                <div class="level-right">
+                  <div class="level-item">
+                    <span class="title is-5 has-text-primary">$<%= total_final.round(2) %></span>
+                  </div>
+                </div>
               </div>
+            </div>
+            
+            <!-- Checkout Button -->
+            <div class="field">
+              <%= link_to "#", class: "button is-primary is-fullwidth is-large has-text-weight-semibold" do %>
+                <span class="icon">
+                  <i class="fas fa-lock"></i>
+                </span>
+                <span>Proceed to Checkout</span>
+              <% end %>
+            </div>
+            
+            <!-- Security Note -->
+            <div class="has-text-centered">
+              <small class="has-text-grey">
+                <i class="fas fa-shield-alt mr-1"></i>
+                Secure checkout powered by SSL
+              </small>
             </div>
           </div>
         </div>
       </div>
     <% else %>
-      <div class="has-text-centered">
-        <h2 class="subtitle is-3">Your cart is empty</h2>
-        <p class="has-text-grey">Add some items to get started!</p>
-        <%= link_to "Browse Products", items_path, class: "button is-primary" %>
+      <!-- Empty Cart State -->
+      <div class="has-text-centered py-6">
+        <div class="box" style="max-width: 500px; margin: 0 auto;">
+          <div class="has-text-centered">
+            <i class="fas fa-shopping-cart fa-4x has-text-grey-light mb-4"></i>
+            <h2 class="title is-3 has-text-grey-dark">Your cart is empty</h2>
+            <p class="subtitle is-5 has-text-grey mb-5">
+              Looks like you haven't added any items to your cart yet.
+            </p>
+            <div class="buttons is-centered">
+              <%= link_to items_path, class: "button is-primary is-large" do %>
+                <span class="icon">
+                  <i class="fas fa-shopping-bag"></i>
+                </span>
+                <span>Start Shopping</span>
+              <% end %>
+              <%= link_to categories_path, class: "button is-light is-large" do %>
+                <span class="icon">
+                  <i class="fas fa-th-large"></i>
+                </span>
+                <span>Browse Categories</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
       </div>
     <% end %>
   </div>
