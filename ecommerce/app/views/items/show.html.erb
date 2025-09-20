@@ -73,12 +73,12 @@
                 <div class="level">
                   <div class="level-left">
                     <div class="level-item">
-                      <span class="title is-3 has-text-danger">$<%= sprintf('%.2f', discounted_price) %></span>
+                      <span class="title is-3 has-text-danger"><%= format_currency_inr(discounted_price) %></span>
                     </div>
                   </div>
                   <div class="level-right">
                     <div class="level-item">
-                      <span class="title is-5 has-text-grey has-text-strikethrough">$<%= sprintf('%.2f', @item.price) %></span>
+                      <span class="title is-5 has-text-grey has-text-strikethrough"><%= format_currency_inr(@item.price) %></span>
                     </div>
                   </div>
                 </div>
@@ -86,10 +86,10 @@
                   <span class="icon">
                     <i class="fas fa-percentage"></i>
                   </span>
-                  <span>Save $<%= sprintf('%.2f', @item.price - discounted_price) %></span>
+                  <span>Save <%= format_currency_inr(@item.price - discounted_price) %></span>
                 </div>
               <% else %>
-                <span class="title is-3 has-text-primary">$<%= sprintf('%.2f', @item.price) %></span>
+                <span class="title is-3 has-text-primary"><%= format_currency_inr(@item.price) %></span>
               <% end %>
               
               <p class="subtitle is-6 has-text-grey">
