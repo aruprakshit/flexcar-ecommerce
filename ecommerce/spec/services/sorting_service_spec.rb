@@ -8,20 +8,11 @@ RSpec.describe SortingService, type: :service do
     let!(:brand_with_no_items) { create(:brand, name: 'Test Brand D') }
 
     before do
-      # Clear existing brands to ensure test isolation
-      Brand.where("name LIKE 'Test Brand%'").destroy_all
-      
-      # Recreate test brands
-      @brand_with_3_items = create(:brand, name: 'Test Brand C')
-      @brand_with_1_item = create(:brand, name: 'Test Brand A')
-      @brand_with_5_items = create(:brand, name: 'Test Brand B')
-      @brand_with_no_items = create(:brand, name: 'Test Brand D')
-      
       # Create items for brands to establish different product counts
-      create_list(:item, 3, brand: @brand_with_3_items)
-      create(:item, brand: @brand_with_1_item)
-      create_list(:item, 5, brand: @brand_with_5_items)
-      # @brand_with_no_items has no items
+      create_list(:item, 3, brand: brand_with_3_items)
+      create(:item, brand: brand_with_1_item)
+      create_list(:item, 5, brand: brand_with_5_items)
+      # brand_with_no_items has no items
     end
 
     describe '#sorted_collection' do
@@ -90,21 +81,16 @@ RSpec.describe SortingService, type: :service do
   end
 
   describe 'Category context' do
+    let!(:category_with_2_items) { create(:category, name: 'Test Category C') }
+    let!(:category_with_4_items) { create(:category, name: 'Test Category A') }
+    let!(:category_with_1_item) { create(:category, name: 'Test Category B') }
+    let!(:category_with_no_items) { create(:category, name: 'Test Category D') }
+
     before do
-      # Clear existing test categories to ensure test isolation
-      Category.where("name LIKE 'Test Category%'").destroy_all
-      
-      # Recreate test categories
-      @category_with_2_items = create(:category, name: 'Test Category C')
-      @category_with_4_items = create(:category, name: 'Test Category A')
-      @category_with_1_item = create(:category, name: 'Test Category B')
-      @category_with_no_items = create(:category, name: 'Test Category D')
-      
       # Create items for categories to establish different product counts
-      create_list(:item, 2, category: @category_with_2_items)
-      create_list(:item, 4, category: @category_with_4_items)
-      create(:item, category: @category_with_1_item)
-      # @category_with_no_items has no items
+      create_list(:item, 2, category: category_with_2_items)
+      create_list(:item, 4, category: category_with_4_items)
+      create(:item, category: category_with_1_item)
     end
 
     describe '#sorted_collection' do
@@ -174,11 +160,6 @@ RSpec.describe SortingService, type: :service do
 
   describe 'Edge cases' do
     context 'when model has no test records' do
-      before do
-        # Clear all test brands to test empty case
-        Brand.where("name LIKE 'Test Brand%'").destroy_all
-      end
-
       it 'returns empty collection for name sorting when no test brands exist' do
         service = SortingService.new(Brand, 'name_asc')
         result = service.sorted_collection
@@ -197,11 +178,7 @@ RSpec.describe SortingService, type: :service do
     end
 
     context 'when model has records but no items' do
-      before do
-        # Clear ALL test brands to ensure clean isolation
-        Brand.where("name LIKE 'Test Brand%'").destroy_all
-        @brand_without_items = create(:brand, name: 'Test Brand Without Items')
-      end
+      let!(:brand_without_items) { create(:brand, name: 'Test Brand Without Items') }
 
       it 'handles zero item counts correctly for product sorting' do
         service = SortingService.new(Brand, 'products_asc')
@@ -214,13 +191,12 @@ RSpec.describe SortingService, type: :service do
     end
 
     context 'when sorting with ties in product count' do
+      let!(:brand1) { create(:brand, name: 'Test Brand A') }
+      let!(:brand2) { create(:brand, name: 'Test Brand B') }
+
       before do
-        Brand.where("name LIKE 'Test Brand%'").destroy_all
-        @brand1 = create(:brand, name: 'Test Brand A')
-        @brand2 = create(:brand, name: 'Test Brand B')
-        
-        create(:item, brand: @brand1)
-        create(:item, brand: @brand2)
+        create(:item, brand: brand1)
+        create(:item, brand: brand2)
       end
 
       it 'maintains consistent ordering for tied product counts' do
