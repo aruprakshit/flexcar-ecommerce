@@ -356,7 +356,7 @@ DEPENDENCIES
   bootsnap
   brakeman
   cssbundling-rails
-  database_cleaner-active_record (~> 2.2)
+  database_cleaner-active_record (~> 2.2, >= 2.2.2)
   debug
   factory_bot_rails (~> 6.5, >= 6.5.1)
   faker (~> 3.5, >= 3.5.2)

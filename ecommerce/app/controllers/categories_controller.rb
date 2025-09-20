@@ -6,6 +6,7 @@ class CategoriesController < ApplicationController
 
   def show
     @category = Category.find(params[:id])
-    @items = @category.items.includes(:brand, :category, :promotions).order(:name)
+    @sort_option = params[:sort] || 'name_asc'
+    @items = ItemSortingService.new(@category.items, @sort_option).sorted_collection
   end
 end

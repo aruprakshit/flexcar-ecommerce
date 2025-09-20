@@ -102,16 +102,21 @@
           
           <div class="level-right">
             <div class="level-item">
-              <div class="field has-addons">
+              <div class="field">
                 <div class="control">
-                  <span class="select">
-                    <select id="sort-select">
-                      <option value="name">Sort by Name</option>
-                      <option value="price_asc">Price: Low to High</option>
-                      <option value="price_desc">Price: High to Low</option>
-                      <option value="brand">Sort by Brand</option>
-                    </select>
-                  </span>
+                  <%= form_with url: category_path(@category), method: :get, local: true, class: "select" do |form| %>
+                    <%= form.select :sort, 
+                        options_for_select([
+                          ['Name: A-Z', 'name_asc'],
+                          ['Name: Z-A', 'name_desc'],
+                          ['Price: Low to High', 'price_asc'],
+                          ['Price: High to Low', 'price_desc'],
+                          ['Brand: A-Z', 'brand_asc'],
+                          ['Brand: Z-A', 'brand_desc']
+                        ], @sort_option),
+                        {},
+                        { onchange: 'this.form.submit();', class: 'select' } %>
+                  <% end %>
                 </div>
               </div>
             </div>
