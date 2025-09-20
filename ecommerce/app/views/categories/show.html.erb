@@ -16,29 +16,7 @@
             <div class="level-left">
               <div class="level-item">
                 <div>
-                  <h1 class="title is-2 has-text-primary">
-                    <span class="icon is-large">
-                      <% case @category.name.downcase %>
-                      <% when /electronics|phone|laptop|computer/ %>
-                        <i class="fas fa-laptop has-text-primary"></i>
-                      <% when /clothing|shirt|dress|fashion/ %>
-                        <i class="fas fa-tshirt has-text-primary"></i>
-                      <% when /home|furniture|kitchen/ %>
-                        <i class="fas fa-home has-text-primary"></i>
-                      <% when /sports|fitness|gym/ %>
-                        <i class="fas fa-dumbbell has-text-primary"></i>
-                      <% when /books|education|learning/ %>
-                        <i class="fas fa-book has-text-primary"></i>
-                      <% when /beauty|cosmetics|health/ %>
-                        <i class="fas fa-spa has-text-primary"></i>
-                      <% when /toys|games|entertainment/ %>
-                        <i class="fas fa-gamepad has-text-primary"></i>
-                      <% when /automotive|car|vehicle/ %>
-                        <i class="fas fa-car has-text-primary"></i>
-                      <% else %>
-                        <i class="fas fa-tags has-text-primary"></i>
-                      <% end %>
-                    </span>
+                  <h1 class="title is-2 mb-2 has-text-primary">
                     <%= @category.name %>
                   </h1>
                   <p class="subtitle is-4">Explore our <%= @category.name %> collection</p>
