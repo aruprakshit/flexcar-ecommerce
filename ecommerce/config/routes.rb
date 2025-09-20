@@ -15,19 +15,14 @@ Rails.application.routes.draw do
   resources :categories, only: [:show, :index]
   resources :brands, only: [:show, :index]
   
-  # Cart routes
-  resources :carts, only: [:show, :new] do
+  # Cart routes (singular resource since there's only one cart per session)
+  resource :cart, only: [:show, :new] do
     member do
       post :add_item
       delete :remove_item
       patch :update_item_quantity
     end
   end
-  
-  # Shorthand routes for cart actions
-  post 'cart/add_item', to: 'carts#add_item', as: :cart_add_item
-  delete 'cart/remove_item', to: 'carts#remove_item', as: :cart_remove_item
-  patch 'cart/update_item', to: 'carts#update_item_quantity', as: :cart_update_item
   
   # Defines the root path route ("/")
   root "homes#index"

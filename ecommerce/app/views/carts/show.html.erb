@@ -25,7 +25,7 @@
                   
                   <div class="column is-2">
                     <div class="field has-addons">
-                      <%= form_with url: cart_update_item_path, method: :patch, local: true do |form| %>
+                      <%= form_with url: update_item_quantity_cart_path, method: :patch, local: true do |form| %>
                         <%= form.hidden_field :item_id, value: cart_item.item.id %>
                         <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
                         <%= form.submit "Update", class: "button is-small is-info" %>
@@ -34,7 +34,7 @@
                   </div>
                   
                   <div class="column is-1">
-                    <%= form_with url: cart_remove_item_path, method: :delete, local: true do |form| %>
+                    <%= form_with url: remove_item_cart_path, method: :delete, local: true do |form| %>
                       <%= form.hidden_field :item_id, value: cart_item.item.id %>
                       <%= form.submit "Remove", class: "button is-small is-danger" %>
                     <% end %>

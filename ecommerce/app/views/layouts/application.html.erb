@@ -45,13 +45,13 @@
           
           <div class="navbar-end">
             <div class="navbar-item">
-              <%= link_to new_cart_path, class: "button is-primary is-inverted" do %>
+              <%= link_to cart_path, class: "button is-primary is-inverted" do %>
                 <span class="icon">
                   <i class="fas fa-shopping-cart"></i>
                 </span>
                 <span>Cart</span>
                 <span class="tag is-danger is-small" id="cart-badge">
-                  <%= 2 %>
+                  <%= current_cart.cart_items.sum(:quantity) %>
                 </span>
               <% end %>
             </div>
