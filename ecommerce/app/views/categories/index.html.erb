@@ -15,6 +15,36 @@
   <section class="section">
     <div class="container">
       <% if @categories.any? %>
+        <!-- Sorting Controls -->
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <span class="tag is-light">
+                <%= pluralize(@categories.count, 'category') %> available
+              </span>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <div class="field">
+                <div class="control">
+                  <%= form_with url: categories_path, method: :get, local: true, class: "select" do |form| %>
+                    <%= form.select :sort, 
+                        options_for_select([
+                          ['Name: A-Z', 'name_asc'],
+                          ['Name: Z-A', 'name_desc'],
+                          ['Products: Few to Many', 'products_asc'],
+                          ['Products: Many to Few', 'products_desc']
+                        ], @sort_option),
+                        {},
+                        { onchange: 'this.form.submit();', class: 'select' } %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
         <div class="columns is-multiline">
           <% @categories.each do |category| %>
             <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
@@ -104,21 +134,3 @@
   </section>
 </div>
 
-<style>
-.has-hover-shadow {
-  transition: box-shadow 0.3s ease;
-}
-
-.has-hover-shadow:hover {
-  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
-}
-
-.media-left .icon {
-  margin-right: 0;
-}
-
-.tag {
-  margin-right: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-</style>
