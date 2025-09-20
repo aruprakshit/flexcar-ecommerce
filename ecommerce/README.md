@@ -127,7 +127,7 @@ dl-test-specific RSPEC_ARGS="spec/models/ --format documentation"
 The test environment automatically:
 - Prepares the test database
 - Runs DatabaseCleaner for test isolation
-- Uses separate test database (ecommerce_test)
+- Uses separate test database (flexcar_ecommerce_test)
 
 ## 🏗 Architecture
 
@@ -192,8 +192,8 @@ ecommerce/
 - `UID`/`GID`: User/group IDs for container permissions
 
 ### Database Configuration
-- **Development**: `ecommerce_development`
-- **Test**: `ecommerce_test`
+- **Development**: `flexcar_ecommerce_development`
+- **Test**: `flexcar_ecommerce_test`
 - **Credentials**: postgres/password
 
 ## 🚨 Troubleshooting
