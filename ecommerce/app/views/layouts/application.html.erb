@@ -64,17 +64,10 @@
     </nav>
 
     <!-- Flash Messages -->
-    <% if notice %>
-      <div class="notification is-success is-light">
-        <button class="delete"></button>
-        <%= notice %>
-      </div>
-    <% end %>
-    
-    <% if alert %>
-      <div class="notification is-danger is-light">
-        <button class="delete"></button>
-        <%= alert %>
+    <% flash.each do |type, message| %>
+      <div class="notification is-<%= type == 'notice' ? 'success' : 'danger' %> is-light">
+        <button class="delete" onclick="this.parentElement.style.display='none'"></button>
+        <%= message %>
       </div>
     <% end %>
 

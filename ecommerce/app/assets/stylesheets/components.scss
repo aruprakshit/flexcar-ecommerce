@@ -93,3 +93,30 @@
 .media-left .icon {
   margin-right: 0;
 }
+
+// Flash message styling
+.notification {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.notification .delete {
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+}
+
+.notification .delete:hover {
+  opacity: 1;
+}
+
+.notification .delete::before {
+  content: "×";
+  font-weight: bold;
+}
