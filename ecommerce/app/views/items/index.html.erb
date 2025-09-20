@@ -28,47 +28,60 @@
         
         <div class="level-right">
           <div class="level-item">
-            <div class="field has-addons">
+            <div class="field">
               <div class="control">
-                <span class="select">
-                  <select id="sort-select">
-                    <option value="name">Sort by Name</option>
-                    <option value="price_asc">Price: Low to High</option>
-                    <option value="price_desc">Price: High to Low</option>
-                    <option value="category">Sort by Category</option>
-                    <option value="brand">Sort by Brand</option>
-                  </select>
-                </span>
+                <%= form_with url: items_path, method: :get, local: true, class: "select" do |form| %>
+                  <%= form.hidden_field :category_id, value: params[:category_id] %>
+                  <%= form.hidden_field :brand_id, value: params[:brand_id] %>
+                  <%= form.select :sort, 
+                      options_for_select([
+                        ['Sort by Name', 'name'],
+                        ['Price: Low to High', 'price_asc'],
+                        ['Price: High to Low', 'price_desc'],
+                        ['Sort by Category', 'category'],
+                        ['Sort by Brand', 'brand']
+                      ], params[:sort]),
+                      {},
+                      { onchange: 'this.form.submit();', class: 'select' } %>
+                <% end %>
               </div>
             </div>
           </div>
           
           <div class="level-item">
-            <div class="field has-addons">
+            <div class="field">
               <div class="control">
-                <span class="select">
-                  <select id="category-filter">
-                    <option value="">All Categories</option>
-                    <% Category.order(:name).each do |category| %>
-                      <option value="<%= category.id %>"><%= category.name %></option>
-                    <% end %>
-                  </select>
-                </span>
+                <%= form_with url: items_path, method: :get, local: true, class: "select" do |form| %>
+                  <%= form.hidden_field :sort, value: params[:sort] %>
+                  <%= form.hidden_field :brand_id, value: params[:brand_id] %>
+                  <%= form.select :category_id, 
+                      options_for_select([['All Categories', '']] + Category.order(:name).map { |c| [c.name, c.id] }, params[:category_id]),
+                      {},
+                      { onchange: 'this.form.submit();', class: 'select' } %>
+                <% end %>
               </div>
             </div>
           </div>
           
           <div class="level-item">
-            <div class="field has-addons">
+            <div class="field">
               <div class="control">
-                <span class="select">
-                  <select id="brand-filter">
-                    <option value="">All Brands</option>
-                    <% Brand.order(:name).each do |brand| %>
-                      <option value="<%= brand.id %>"><%= brand.name %></option>
-                    <% end %>
-                  </select>
-                </span>
+                <%= form_with url: items_path, method: :get, local: true, class: "select" do |form| %>
+                  <%= form.hidden_field :sort, value: params[:sort] %>
+                  <%= form.hidden_field :category_id, value: params[:category_id] %>
+                  <%= form.select :brand_id, 
+                      options_for_select([['All Brands', '']] + Brand.order(:name).map { |b| [b.name, b.id] }, params[:brand_id]),
+                      {},
+                      { onchange: 'this.form.submit();', class: 'select' } %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="level-item">
+            <div class="field">
+              <div class="control">
+                <%= link_to "Clear Filters", items_path, class: "button is-light" %>
               </div>
             </div>
           </div>
@@ -81,13 +94,9 @@
   <section class="section">
     <div class="container">
       <% if @items.any? %>
-        <div class="columns is-multiline" id="items-grid">
+        <div class="columns is-multiline">
           <% @items.each do |item| %>
-            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile item-card" 
-                 data-category="<%= item.category.id %>" 
-                 data-brand="<%= item.brand.id %>"
-                 data-name="<%= item.name.downcase %>"
-                 data-price="<%= item.price %>">
+            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
               <%= render 'item_card', item: item %>
             </div>
           <% end %>
@@ -126,8 +135,8 @@
             <span class="icon is-large has-text-grey-light">
               <i class="fas fa-box-open fa-3x"></i>
             </span>
-            <h3 class="title is-4 has-text-grey">No Products Available</h3>
-            <p class="subtitle is-6 has-text-grey">Check back later for new product additions!</p>
+            <h3 class="title is-4 has-text-grey">No Products Found</h3>
+            <p class="subtitle is-6 has-text-grey">Try adjusting your filters or check back later!</p>
           </div>
         </div>
       <% end %>

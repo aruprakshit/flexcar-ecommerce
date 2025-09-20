@@ -1,9 +1,6 @@
 class ItemsController < ApplicationController
   def index
-    @items = Item.includes(:brand, :category, :promotions)
-                 .order(:name)
-                 .page(params[:page])
-                 .per(12)
+    @items = ItemFilterService.new(params).call
   end
 
   def show
