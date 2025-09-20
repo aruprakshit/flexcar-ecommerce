@@ -87,21 +87,25 @@
                       
                       <div class="level-right">
                         <div class="level-item">
-                          <div class="field has-addons">
-                            <%= form_with url: update_item_quantity_cart_path, method: :patch, local: true, class: "mr-3" do |form| %>
+                          <div class="field is-grouped">
+                            <%= form_with url: update_item_quantity_cart_path, method: :patch, local: true, class: "control" do |form| %>
                               <%= form.hidden_field :item_id, value: cart_item.item.id %>
-                              <div class="control">
-                                <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
-                              </div>
-                              <div class="control">
-                                <%= form.submit "Update", class: "button is-info" %>
+                              <div class="field has-addons">
+                                <div class="control">
+                                  <%= form.number_field :quantity, value: cart_item.quantity, min: 1, class: "input", style: "width: 80px;" %>
+                                </div>
+                                <div class="control">
+                                  <%= form.submit "Update", class: "button is-info" %>
+                                </div>
                               </div>
                             <% end %>
                             
-                            <%= form_with url: remove_item_cart_path, method: :delete, local: true do |form| %>
-                              <%= form.hidden_field :item_id, value: cart_item.item.id %>
-                              <%= form.submit "Remove", class: "button is-danger is-outlined" %>
-                            <% end %>
+                            <div class="control">
+                              <%= form_with url: remove_item_cart_path, method: :delete, local: true do |form| %>
+                                <%= form.hidden_field :item_id, value: cart_item.item.id %>
+                                <%= form.submit "Remove", class: "button is-danger is-outlined" %>
+                              <% end %>
+                            </div>
                           </div>
                         </div>
                       </div>
