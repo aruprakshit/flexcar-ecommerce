@@ -1,0 +1,82 @@
+// Common component styles used across the application
+
+.card {
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.level {
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.title .icon {
+  margin-right: 0.5rem;
+}
+
+.has-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.notification {
+  margin: 1rem 0;
+}
+
+.box {
+  border-radius: 6px;
+}
+
+.field.has-addons .control {
+  margin-right: 0.5rem;
+}
+
+.field.has-addons .control:last-child {
+  margin-right: 0;
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.content h4,
+.content h5 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.content ul {
+  margin-left: 1rem;
+}
+
+.content li {
+  margin-bottom: 0.25rem;
+}
+
+.item-card {
+  transition: opacity 0.3s ease;
+}
+
+.item-card.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.field.has-addons {
+  margin-right: 1rem;
+}
+
+.field.has-addons:last-child {
+  margin-right: 0;
+}
