@@ -23,8 +23,9 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/flexcar_development
       - RAILS_ENV=development
+      - DATABASE_DEV_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_development
+      - DATABASE_TEST_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_test
 volumes:
   postgres_data:
   bundle_cache:
