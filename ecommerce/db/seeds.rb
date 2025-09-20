@@ -2,10 +2,16 @@
 # development, test). The code here should be idempotent so that it can be executed at any point in every environment.
 # The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
 
+# Skip seeding in test environment
+if Rails.env.test?
+  puts "Skipping seed data creation in test environment"
+  return
+end
+
 puts "Starting seed data creation..."
 
-# Clear existing data (for development/testing)
-if Rails.env.development? || Rails.env.test?
+# Clear existing data (for development only)
+if Rails.env.development?
   puts "Clearing existing data..."
   Promotion.destroy_all
   CartItem.destroy_all

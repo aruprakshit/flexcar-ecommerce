@@ -9,4 +9,9 @@ alias dl-down='docker compose down'
 alias dl-logs-web='docker compose logs -f web'
 alias dl-exec='docker compose exec web'
 
-echo "Docker aliases are now active: dl-bexec, dl-up, dl-down, dl-logs-web, dl-exec"
+# Test aliases
+alias dl-bexec-t='docker compose --profile test run --rm test bundle exec'
+alias dl-test='docker compose --profile test run --rm test'
+alias dl-test-specific='docker compose --profile test run --rm -e RSPEC_ARGS'
+
+echo "Docker aliases are now active: dl-bexec, dl-up, dl-down, dl-logs-web, dl-exec, dl-bexec-t, dl-test, dl-test-specific"

@@ -25,7 +25,26 @@ services:
     environment:
       - RAILS_ENV=development
       - DATABASE_DEV_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_development
+
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        USER_ID: ${UID:-1000}
+        GROUP_ID: ${GID:-1000}
+    command: bash -c "bundle exec rails db:test:prepare"
+    volumes:
+      - .:/app
+      - bundle_cache:/app/vendor/bundle
+    depends_on:
+      - db
+    environment:
+      - RAILS_ENV=test
       - DATABASE_TEST_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_test
+    profiles:
+      - test
+
 volumes:
   postgres_data:
   bundle_cache:
