@@ -1,0 +1,242 @@
+<div class="container">
+  <!-- Page Header -->
+  <section class="section">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="title is-2 has-text-primary">Products</h1>
+          <p class="subtitle is-4">Discover our complete collection of quality products</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters and Sort Bar -->
+  <section class="section">
+    <div class="container">
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <h2 class="title is-4">All Products</h2>
+          </div>
+          <div class="level-item">
+            <span class="tag is-light">
+              <%= pluralize(@items.count, 'product') %> available
+            </span>
+          </div>
+        </div>
+        
+        <div class="level-right">
+          <div class="level-item">
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select id="sort-select">
+                    <option value="name">Sort by Name</option>
+                    <option value="price_asc">Price: Low to High</option>
+                    <option value="price_desc">Price: High to Low</option>
+                    <option value="category">Sort by Category</option>
+                    <option value="brand">Sort by Brand</option>
+                  </select>
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="level-item">
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select id="category-filter">
+                    <option value="">All Categories</option>
+                    <% Category.order(:name).each do |category| %>
+                      <option value="<%= category.id %>"><%= category.name %></option>
+                    <% end %>
+                  </select>
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="level-item">
+            <div class="field has-addons">
+              <div class="control">
+                <span class="select">
+                  <select id="brand-filter">
+                    <option value="">All Brands</option>
+                    <% Brand.order(:name).each do |brand| %>
+                      <option value="<%= brand.id %>"><%= brand.name %></option>
+                    <% end %>
+                  </select>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="section">
+    <div class="container">
+      <% if @items.any? %>
+        <div class="columns is-multiline" id="items-grid">
+          <% @items.each do |item| %>
+            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile item-card" 
+                 data-category="<%= item.category.id %>" 
+                 data-brand="<%= item.brand.id %>"
+                 data-name="<%= item.name.downcase %>"
+                 data-price="<%= item.price %>">
+              <%= render 'item_card', item: item %>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Pagination (if using Kaminari) -->
+        <% if respond_to?(:paginate) %>
+          <div class="has-text-centered" style="margin-top: 2rem;">
+            <%= paginate @items %>
+          </div>
+        <% else %>
+          <!-- Load More Button (for future pagination) -->
+          <div class="has-text-centered" style="margin-top: 2rem;">
+            <button class="button is-primary is-large" disabled>
+              <span class="icon">
+                <i class="fas fa-check"></i>
+              </span>
+              <span>All products loaded</span>
+            </button>
+          </div>
+        <% end %>
+        
+      <% else %>
+        <!-- Empty State -->
+        <div class="has-text-centered">
+          <div class="box" style="max-width: 500px; margin: 0 auto;">
+            <span class="icon is-large has-text-grey-light">
+              <i class="fas fa-box-open fa-3x"></i>
+            </span>
+            <h3 class="title is-4 has-text-grey">No Products Available</h3>
+            <p class="subtitle is-6 has-text-grey">Check back later for new product additions!</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<!-- JavaScript for filtering and sorting functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sortSelect = document.getElementById('sort-select');
+  const categoryFilter = document.getElementById('category-filter');
+  const brandFilter = document.getElementById('brand-filter');
+  const itemsGrid = document.getElementById('items-grid');
+  
+  function filterAndSortItems() {
+    if (!itemsGrid) return;
+    
+    const items = Array.from(itemsGrid.children);
+    const selectedCategory = categoryFilter ? categoryFilter.value : '';
+    const selectedBrand = brandFilter ? brandFilter.value : '';
+    const sortBy = sortSelect ? sortSelect.value : 'name';
+    
+    // Filter items
+    let filteredItems = items.filter(function(item) {
+      const categoryMatch = !selectedCategory || item.dataset.category === selectedCategory;
+      const brandMatch = !selectedBrand || item.dataset.brand === selectedBrand;
+      return categoryMatch && brandMatch;
+    });
+    
+    // Sort items
+    filteredItems.sort(function(a, b) {
+      const aName = a.dataset.name || '';
+      const bName = b.dataset.name || '';
+      const aPrice = parseFloat(a.dataset.price || '0');
+      const bPrice = parseFloat(b.dataset.price || '0');
+      const aCategory = a.querySelector('.category') ? a.querySelector('.category').textContent.toLowerCase() : '';
+      const bCategory = b.querySelector('.category') ? b.querySelector('.category').textContent.toLowerCase() : '';
+      const aBrand = a.querySelector('.brand') ? a.querySelector('.brand').textContent.toLowerCase() : '';
+      const bBrand = b.querySelector('.brand') ? b.querySelector('.brand').textContent.toLowerCase() : '';
+      
+      switch(sortBy) {
+        case 'name':
+          return aName.localeCompare(bName);
+        case 'price_asc':
+          return aPrice - bPrice;
+        case 'price_desc':
+          return bPrice - aPrice;
+        case 'category':
+          return aCategory.localeCompare(bCategory);
+        case 'brand':
+          return aBrand.localeCompare(bBrand);
+        default:
+          return 0;
+      }
+    });
+    
+    // Hide all items first
+    items.forEach(item => item.style.display = 'none');
+    
+    // Show filtered and sorted items
+    filteredItems.forEach(item => item.style.display = 'block');
+    
+    // Update item count
+    const countTag = document.querySelector('.tag.is-light');
+    if (countTag) {
+      countTag.textContent = `${filteredItems.length} product${filteredItems.length !== 1 ? 's' : ''} available`;
+    }
+  }
+  
+  // Add event listeners
+  if (sortSelect) {
+    sortSelect.addEventListener('change', filterAndSortItems);
+  }
+  
+  if (categoryFilter) {
+    categoryFilter.addEventListener('change', filterAndSortItems);
+  }
+  
+  if (brandFilter) {
+    brandFilter.addEventListener('change', filterAndSortItems);
+  }
+});
+</script>
+
+<style>
+.item-card {
+  transition: opacity 0.3s ease;
+}
+
+.item-card.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.level {
+  margin-bottom: 2rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.field.has-addons {
+  margin-right: 1rem;
+}
+
+.field.has-addons:last-child {
+  margin-right: 0;
+}
+
+.card {
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+</style>

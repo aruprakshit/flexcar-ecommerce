@@ -1,0 +1,251 @@
+<div class="container">
+  <!-- Breadcrumb -->
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><%= link_to "Home", root_path %></li>
+          <li><%= link_to "Products", items_path %></li>
+          <li><%= link_to @item.category.name, category_path(@item.category) %></li>
+          <li class="is-active"><a href="#" aria-current="page"><%= @item.name %></a></li>
+        </ul>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Product Details -->
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+        <!-- Product Image -->
+        <div class="column is-half">
+          <div class="card">
+            <div class="card-image">
+              <% if @item.promotions.active.any? %>
+                <div class="image is-4by3 has-background-light">
+                  <div class="is-flex is-align-items-center is-justify-content-center" style="height: 100%;">
+                    <i class="fas fa-image fa-5x has-text-grey"></i>
+                  </div>
+                  <div class="tag is-danger is-overlay" style="top: 0.5rem; right: 0.5rem;">
+                    <span class="icon">
+                      <i class="fas fa-tag"></i>
+                    </span>
+                    <span>Sale!</span>
+                  </div>
+                </div>
+              <% else %>
+                <div class="image is-4by3 has-background-light">
+                  <div class="is-flex is-align-items-center is-justify-content-center" style="height: 100%;">
+                    <i class="fas fa-image fa-5x has-text-grey"></i>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="column is-half">
+          <div class="content">
+            <!-- Product Title -->
+            <h1 class="title is-2 has-text-primary"><%= @item.name %></h1>
+            
+            <!-- Brand and Category -->
+            <div class="tags">
+              <span class="tag is-info">
+                <span class="icon">
+                  <i class="fas fa-tags"></i>
+                </span>
+                <span><%= link_to @item.brand.name, brand_path(@item.brand), class: "has-text-white" %></span>
+              </span>
+              <span class="tag is-light">
+                <span class="icon">
+                  <i class="fas fa-th-large"></i>
+                </span>
+                <span><%= link_to @item.category.name, category_path(@item.category), class: "has-text-dark" %></span>
+              </span>
+            </div>
+
+            <!-- Price Section -->
+            <div class="box" style="margin: 1.5rem 0;">
+              <% discounted_price = @item.calculate_discounted_price %>
+              <% if discounted_price < @item.price %>
+                <div class="level">
+                  <div class="level-left">
+                    <div class="level-item">
+                      <span class="title is-3 has-text-danger">$<%= sprintf('%.2f', discounted_price) %></span>
+                    </div>
+                  </div>
+                  <div class="level-right">
+                    <div class="level-item">
+                      <span class="title is-5 has-text-grey has-text-strikethrough">$<%= sprintf('%.2f', @item.price) %></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="tag is-success">
+                  <span class="icon">
+                    <i class="fas fa-percentage"></i>
+                  </span>
+                  <span>Save $<%= sprintf('%.2f', @item.price - discounted_price) %></span>
+                </div>
+              <% else %>
+                <span class="title is-3 has-text-primary">$<%= sprintf('%.2f', @item.price) %></span>
+              <% end %>
+              
+              <p class="subtitle is-6 has-text-grey">
+                <% if @item.by_weight? %>
+                  <span class="icon">
+                    <i class="fas fa-weight"></i>
+                  </span>
+                  Sold by weight
+                <% else %>
+                  <span class="icon">
+                    <i class="fas fa-shopping-cart"></i>
+                  </span>
+                  Sold by quantity
+                <% end %>
+              </p>
+            </div>
+
+            <!-- Active Promotions -->
+            <% active_promotions = @item.promotions.active %>
+            <% if active_promotions.any? %>
+              <div class="notification is-success">
+                <h4 class="title is-6">Active Promotions</h4>
+                <% active_promotions.each do |promotion| %>
+                  <div class="tag is-success is-medium" style="margin-right: 0.5rem; margin-bottom: 0.5rem;">
+                    <span class="icon">
+                      <i class="fas fa-tag"></i>
+                    </span>
+                    <span><%= promotion.name %></span>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+
+            <!-- Add to Cart Section -->
+            <div class="box">
+              <h4 class="title is-5">Add to Cart</h4>
+              <%= form_with url: cart_add_item_path, method: :post, local: true, class: "field has-addons" do |form| %>
+                <%= form.hidden_field :item_id, value: @item.id %>
+                <div class="control">
+                  <label class="label">Quantity:</label>
+                  <%= form.number_field :quantity, value: 1, min: 1, class: "input", style: "width: 100px;" %>
+                </div>
+                <div class="control" style="margin-top: 1.5rem;">
+                  <%= form.submit "Add to Cart", class: "button is-primary is-large" %>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Product Description -->
+            <div class="content">
+              <h4 class="title is-5">Product Information</h4>
+              <p class="has-text-grey">
+                High-quality <%= @item.name %> from <%= @item.brand.name %>. 
+                Perfect for your needs in the <%= @item.category.name %> category.
+              </p>
+              
+              <div class="columns" style="margin-top: 1rem;">
+                <div class="column">
+                  <div class="box">
+                    <h5 class="title is-6">Product Details</h5>
+                    <ul>
+                      <li><strong>Brand:</strong> <%= @item.brand.name %></li>
+                      <li><strong>Category:</strong> <%= @item.category.name %></li>
+                      <li><strong>Sale Type:</strong> <%= @item.by_weight? ? 'By Weight' : 'By Quantity' %></li>
+                      <li><strong>Price:</strong> $<%= sprintf('%.2f', @item.price) %></li>
+                      <% if discounted_price < @item.price %>
+                        <li><strong>Discounted Price:</strong> $<%= sprintf('%.2f', discounted_price) %></li>
+                        <li><strong>Savings:</strong> $<%= sprintf('%.2f', @item.price - discounted_price) %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Products -->
+  <% if @related_items.any? %>
+    <section class="section">
+      <div class="container">
+        <h2 class="title is-3 has-text-primary">Related Products</h2>
+        <p class="subtitle is-5">More products in <%= @item.category.name %></p>
+        
+        <div class="columns is-multiline">
+          <% @related_items.each do |item| %>
+            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
+              <%= render 'item_card', item: item %>
+            </div>
+          <% end %>
+        </div>
+        
+        <div class="has-text-centered" style="margin-top: 2rem;">
+          <%= link_to "View All #{@item.category.name} Products", category_path(@item.category), 
+              class: "button is-primary is-large" %>
+        </div>
+      </div>
+    </section>
+  <% end %>
+</div>
+
+<style>
+.card {
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.has-text-strikethrough {
+  text-decoration: line-through;
+}
+
+.notification {
+  margin: 1rem 0;
+}
+
+.box {
+  border-radius: 6px;
+}
+
+.field.has-addons .control {
+  margin-right: 0.5rem;
+}
+
+.field.has-addons .control:last-child {
+  margin-right: 0;
+}
+
+.title {
+  margin-bottom: 1rem;
+}
+
+.content h4, .content h5 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.content ul {
+  margin-left: 1rem;
+}
+
+.content li {
+  margin-bottom: 0.25rem;
+}
+</style>

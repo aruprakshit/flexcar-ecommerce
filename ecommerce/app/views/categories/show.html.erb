@@ -1,0 +1,247 @@
+<div class="container">
+  <!-- Category Header -->
+  <section class="section">
+    <div class="container">
+      <nav class="breadcrumb" aria-label="breadcrumbs">
+        <ul>
+          <li><%= link_to "Home", root_path %></li>
+          <li><%= link_to "Categories", categories_path %></li>
+          <li class="is-active"><a href="#" aria-current="page"><%= @category.name %></a></li>
+        </ul>
+      </nav>
+      
+      <div class="columns is-vcentered">
+        <div class="column">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <div>
+                  <h1 class="title is-2 has-text-primary">
+                    <span class="icon is-large">
+                      <% case @category.name.downcase %>
+                      <% when /electronics|phone|laptop|computer/ %>
+                        <i class="fas fa-laptop has-text-primary"></i>
+                      <% when /clothing|shirt|dress|fashion/ %>
+                        <i class="fas fa-tshirt has-text-primary"></i>
+                      <% when /home|furniture|kitchen/ %>
+                        <i class="fas fa-home has-text-primary"></i>
+                      <% when /sports|fitness|gym/ %>
+                        <i class="fas fa-dumbbell has-text-primary"></i>
+                      <% when /books|education|learning/ %>
+                        <i class="fas fa-book has-text-primary"></i>
+                      <% when /beauty|cosmetics|health/ %>
+                        <i class="fas fa-spa has-text-primary"></i>
+                      <% when /toys|games|entertainment/ %>
+                        <i class="fas fa-gamepad has-text-primary"></i>
+                      <% when /automotive|car|vehicle/ %>
+                        <i class="fas fa-car has-text-primary"></i>
+                      <% else %>
+                        <i class="fas fa-tags has-text-primary"></i>
+                      <% end %>
+                    </span>
+                    <%= @category.name %>
+                  </h1>
+                  <p class="subtitle is-4">Explore our <%= @category.name %> collection</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Category Stats -->
+          <div class="tags">
+            <span class="tag is-primary is-medium">
+              <span class="icon">
+                <i class="fas fa-box"></i>
+              </span>
+              <span><%= pluralize(@items.count, 'product') %></span>
+            </span>
+            
+            <% if @items.any? %>
+              <% active_promotions = @items.joins(:promotions).where(promotions: { start_time: ..Time.current, end_time: [nil, Time.current..] }).distinct.count %>
+              <% if active_promotions > 0 %>
+                <span class="tag is-success is-medium">
+                  <span class="icon">
+                    <i class="fas fa-tag"></i>
+                  </span>
+                  <span><%= pluralize(active_promotions, 'promotion') %> active</span>
+                </span>
+              <% end %>
+              
+              <% brands_count = @items.joins(:brand).distinct.count('brands.id') %>
+              <% if brands_count > 0 %>
+                <span class="tag is-info is-medium">
+                  <span class="icon">
+                    <i class="fas fa-tags"></i>
+                  </span>
+                  <span><%= pluralize(brands_count, 'brand') %></span>
+                </span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Grid -->
+  <section class="section">
+    <div class="container">
+      <% if @items.any? %>
+        <!-- Filter/Sort Bar -->
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <h2 class="title is-4">Products</h2>
+            </div>
+            <div class="level-item">
+              <span class="tag is-light">
+                Showing <%= @items.count %> <%= pluralize(@items.count, 'product') %>
+              </span>
+            </div>
+          </div>
+          
+          <div class="level-right">
+            <div class="level-item">
+              <div class="field has-addons">
+                <div class="control">
+                  <span class="select">
+                    <select id="sort-select">
+                      <option value="name">Sort by Name</option>
+                      <option value="price_asc">Price: Low to High</option>
+                      <option value="price_desc">Price: High to Low</option>
+                      <option value="brand">Sort by Brand</option>
+                    </select>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Items Grid -->
+        <div class="columns is-multiline" id="items-grid">
+          <% @items.each do |item| %>
+            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
+              <%= render 'items/item_card', item: item %>
+            </div>
+          <% end %>
+        </div>
+        
+        <!-- Load More Button (for future pagination) -->
+        <div class="has-text-centered" style="margin-top: 2rem;">
+          <button class="button is-primary is-large" disabled>
+            <span class="icon">
+              <i class="fas fa-check"></i>
+            </span>
+            <span>All products loaded</span>
+          </button>
+        </div>
+        
+      <% else %>
+        <!-- Empty State -->
+        <div class="has-text-centered">
+          <div class="box" style="max-width: 500px; margin: 0 auto;">
+            <span class="icon is-large has-text-grey-light">
+              <% case @category.name.downcase %>
+              <% when /electronics|phone|laptop|computer/ %>
+                <i class="fas fa-laptop fa-3x"></i>
+              <% when /clothing|shirt|dress|fashion/ %>
+                <i class="fas fa-tshirt fa-3x"></i>
+              <% when /home|furniture|kitchen/ %>
+                <i class="fas fa-home fa-3x"></i>
+              <% when /sports|fitness|gym/ %>
+                <i class="fas fa-dumbbell fa-3x"></i>
+              <% when /books|education|learning/ %>
+                <i class="fas fa-book fa-3x"></i>
+              <% when /beauty|cosmetics|health/ %>
+                <i class="fas fa-spa fa-3x"></i>
+              <% when /toys|games|entertainment/ %>
+                <i class="fas fa-gamepad fa-3x"></i>
+              <% when /automotive|car|vehicle/ %>
+                <i class="fas fa-car fa-3x"></i>
+              <% else %>
+                <i class="fas fa-box-open fa-3x"></i>
+              <% end %>
+            </span>
+            <h3 class="title is-4 has-text-grey">No Products Available</h3>
+            <p class="subtitle is-6 has-text-grey">
+              <%= @category.name %> doesn't have any products yet. Check back later!
+            </p>
+            <div class="buttons is-centered" style="margin-top: 1rem;">
+              <%= link_to "Browse Other Categories", categories_path, class: "button is-primary" %>
+              <%= link_to "View All Products", items_path, class: "button is-light" %>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<!-- JavaScript for sorting functionality -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const sortSelect = document.getElementById('sort-select');
+  const itemsGrid = document.getElementById('items-grid');
+  
+  if (sortSelect && itemsGrid) {
+    sortSelect.addEventListener('change', function() {
+      const items = Array.from(itemsGrid.children);
+      
+      items.sort(function(a, b) {
+        const aName = a.querySelector('.title').textContent.toLowerCase();
+        const bName = b.querySelector('.title').textContent.toLowerCase();
+        const aPrice = parseFloat(a.querySelector('.price').textContent.replace('$', ''));
+        const bPrice = parseFloat(b.querySelector('.price').textContent.replace('$', ''));
+        const aBrand = a.querySelector('.brand') ? a.querySelector('.brand').textContent.toLowerCase() : '';
+        const bBrand = b.querySelector('.brand') ? b.querySelector('.brand').textContent.toLowerCase() : '';
+        
+        switch(this.value) {
+          case 'name':
+            return aName.localeCompare(bName);
+          case 'price_asc':
+            return aPrice - bPrice;
+          case 'price_desc':
+            return bPrice - aPrice;
+          case 'brand':
+            return aBrand.localeCompare(bBrand);
+          default:
+            return 0;
+        }
+      });
+      
+      // Clear and re-append sorted items
+      itemsGrid.innerHTML = '';
+      items.forEach(item => itemsGrid.appendChild(item));
+    });
+  }
+});
+</script>
+
+<style>
+.card {
+  height: 100%;
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+.level {
+  margin-bottom: 2rem;
+}
+
+.breadcrumb {
+  margin-bottom: 1rem;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.title .icon {
+  margin-right: 0.5rem;
+}
+</style>

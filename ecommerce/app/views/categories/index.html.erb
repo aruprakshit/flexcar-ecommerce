@@ -1,0 +1,124 @@
+<div class="container">
+  <!-- Page Header -->
+  <section class="section">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column">
+          <h1 class="title is-2 has-text-primary">Categories</h1>
+          <p class="subtitle is-4">Browse products by category and find what you need</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories Grid -->
+  <section class="section">
+    <div class="container">
+      <% if @categories.any? %>
+        <div class="columns is-multiline">
+          <% @categories.each do |category| %>
+            <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+              <div class="card has-hover-shadow">
+                <div class="card-content">
+                  <div class="media">
+                    <div class="media-left">
+                      <div class="icon is-large has-text-primary">
+                        <% case category.name.downcase %>
+                        <% when /electronics|phone|laptop|computer/ %>
+                          <i class="fas fa-laptop fa-2x"></i>
+                        <% when /clothing|shirt|dress|fashion/ %>
+                          <i class="fas fa-tshirt fa-2x"></i>
+                        <% when /home|furniture|kitchen/ %>
+                          <i class="fas fa-home fa-2x"></i>
+                        <% when /sports|fitness|gym/ %>
+                          <i class="fas fa-dumbbell fa-2x"></i>
+                        <% when /books|education|learning/ %>
+                          <i class="fas fa-book fa-2x"></i>
+                        <% when /beauty|cosmetics|health/ %>
+                          <i class="fas fa-spa fa-2x"></i>
+                        <% when /toys|games|entertainment/ %>
+                          <i class="fas fa-gamepad fa-2x"></i>
+                        <% when /automotive|car|vehicle/ %>
+                          <i class="fas fa-car fa-2x"></i>
+                        <% else %>
+                          <i class="fas fa-tags fa-2x"></i>
+                        <% end %>
+                      </div>
+                    </div>
+                    <div class="media-content">
+                      <h2 class="title is-4 has-text-primary">
+                        <%= link_to category.name, category_path(category), class: "has-text-primary" %>
+                      </h2>
+                      <p class="subtitle is-6 has-text-grey-dark">
+                        <%= pluralize(category.items.count, 'product') %> available
+                      </p>
+                    </div>
+                    <div class="media-right">
+                      <div class="tag is-primary is-medium">
+                        <%= category.items.count %>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="content">
+                    <p class="has-text-grey">
+                      Discover our <%= category.name %> collection featuring the latest products and best deals.
+                    </p>
+                    
+                    <!-- Active Promotions Indicator -->
+                    <% active_promotions = category.items.joins(:promotions).where(promotions: { start_time: ..Time.current, end_time: [nil, Time.current..] }).distinct.count %>
+                    <% if active_promotions > 0 %>
+                      <div class="tags">
+                        <span class="tag is-success is-small">
+                          <span class="icon">
+                            <i class="fas fa-tag"></i>
+                          </span>
+                          <span><%= pluralize(active_promotions, 'promotion') %> active</span>
+                        </span>
+                      </div>
+                    <% end %>
+                  </div>
+                  
+                  <footer class="card-footer">
+                    <%= link_to "View Products", category_path(category), 
+                        class: "card-footer-item button is-primary is-fullwidth" %>
+                  </footer>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <!-- Empty State -->
+        <div class="has-text-centered">
+          <div class="box" style="max-width: 500px; margin: 0 auto;">
+            <span class="icon is-large has-text-grey-light">
+              <i class="fas fa-th-large fa-3x"></i>
+            </span>
+            <h3 class="title is-4 has-text-grey">No Categories Available</h3>
+            <p class="subtitle is-6 has-text-grey">Check back later for new category additions!</p>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </section>
+</div>
+
+<style>
+.has-hover-shadow {
+  transition: box-shadow 0.3s ease;
+}
+
+.has-hover-shadow:hover {
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02);
+}
+
+.media-left .icon {
+  margin-right: 0;
+}
+
+.tag {
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+</style>
