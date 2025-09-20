@@ -1,0 +1,191 @@
+<% if paginated_collection.respond_to?(:current_page) %>
+  <% 
+    # Safely extract permitted parameters
+    permitted_params = {}
+    permitted_params[:sort] = params[:sort] if params[:sort].present?
+    permitted_params[:category] = params[:category] if params[:category].present?
+    permitted_params[:brand] = params[:brand] if params[:brand].present?
+  %>
+  
+  <div class="level" style="margin-top: 2rem;">
+    <div class="level-left">
+      <div class="level-item">
+        <span class="tag is-light">
+          Page <%= paginated_collection.current_page %> of <%= paginated_collection.total_pages %>
+        </span>
+      </div>
+    </div>
+    <div class="level-right">
+      <div class="level-item">
+        <nav class="pagination is-right" role="navigation" aria-label="pagination">
+          <ul class="pagination-list">
+            <!-- First page -->
+            <% unless paginated_collection.current_page == 1 %>
+              <li>
+                <%= link_to "First", permitted_params.merge(page: 1), 
+                    class: "pagination-link pagination-first" %>
+              </li>
+            <% end %>
+            
+            <!-- Previous page -->
+            <% if paginated_collection.current_page > 1 %>
+              <li>
+                <%= link_to "Prev", permitted_params.merge(page: paginated_collection.current_page - 1), 
+                    class: "pagination-link pagination-previous" %>
+              </li>
+            <% end %>
+            
+            <!-- Page numbers -->
+            <% start_page = [paginated_collection.current_page - 2, 1].max %>
+            <% end_page = [paginated_collection.current_page + 2, paginated_collection.total_pages].min %>
+            
+            <% if start_page > 1 %>
+              <li>
+                <%= link_to "1", permitted_params.merge(page: 1), 
+                    class: "pagination-link" %>
+              </li>
+              <% if start_page > 2 %>
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+              <% end %>
+            <% end %>
+            
+            <% (start_page..end_page).each do |page| %>
+              <li>
+                <% if page == paginated_collection.current_page %>
+                  <span class="pagination-link is-current"><%= page %></span>
+                <% else %>
+                  <%= link_to page, permitted_params.merge(page: page), 
+                      class: "pagination-link" %>
+                <% end %>
+              </li>
+            <% end %>
+            
+            <% if end_page < paginated_collection.total_pages %>
+              <% if end_page < paginated_collection.total_pages - 1 %>
+                <li><span class="pagination-ellipsis">&hellip;</span></li>
+              <% end %>
+              <li>
+                <%= link_to paginated_collection.total_pages, permitted_params.merge(page: paginated_collection.total_pages), 
+                    class: "pagination-link" %>
+              </li>
+            <% end %>
+            
+            <!-- Next page -->
+            <% if paginated_collection.current_page < paginated_collection.total_pages %>
+              <li>
+                <%= link_to "Next", permitted_params.merge(page: paginated_collection.current_page + 1), 
+                    class: "pagination-link pagination-next" %>
+              </li>
+            <% end %>
+            
+            <!-- Last page -->
+            <% unless paginated_collection.current_page == paginated_collection.total_pages %>
+              <li>
+                <%= link_to "Last", permitted_params.merge(page: paginated_collection.total_pages), 
+                    class: "pagination-link pagination-last" %>
+              </li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<style>
+.pagination-list {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  margin: 0 !important;
+  list-style: none !important;
+  padding: 0 !important;
+}
+
+.pagination-list li {
+  margin: 0 !important;
+  list-style: none !important;
+}
+
+.pagination-link {
+  min-width: 2.25rem !important;
+  height: 2.25rem !important;
+  padding: 0.375rem 0.5rem !important;
+  font-size: 0.875rem !important;
+  border-radius: 4px !important;
+  border: 1px solid #dbdbdb !important;
+  background-color: #fff !important;
+  color: #363636 !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  margin: 0 !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  vertical-align: middle !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  user-select: none !important;
+}
+
+.pagination-link:hover {
+  background-color: #f5f5f5 !important;
+  border-color: #b5b5b5 !important;
+  color: #363636 !important;
+  text-decoration: none !important;
+}
+
+.pagination-link.is-current {
+  background-color: #3273dc !important;
+  border-color: #3273dc !important;
+  color: #fff !important;
+}
+
+.pagination-ellipsis {
+  min-width: 2.25rem !important;
+  height: 2.25rem !important;
+  padding: 0.375rem 0.5rem !important;
+  font-size: 0.875rem !important;
+  border: none !important;
+  background: none !important;
+  color: #b5b5b5 !important;
+  cursor: default !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+}
+
+.pagination-previous,
+.pagination-next,
+.pagination-first,
+.pagination-last {
+  min-width: auto !important;
+  padding: 0.375rem 0.75rem !important;
+}
+
+@media screen and (max-width: 768px) {
+  .pagination-list {
+    gap: 0.125rem !important;
+  }
+  
+  .pagination-link,
+  .pagination-ellipsis {
+    min-width: 2rem !important;
+    height: 2rem !important;
+    padding: 0.25rem 0.375rem !important;
+    font-size: 0.75rem !important;
+  }
+  
+  .pagination-previous,
+  .pagination-next,
+  .pagination-first,
+  .pagination-last {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+</style>

@@ -93,20 +93,29 @@
           <% end %>
         </div>
         
-        <!-- Pagination (if using Kaminari) -->
-        <% if respond_to?(:paginate) %>
-          <div class="has-text-centered" style="margin-top: 2rem;">
-            <%= paginate @items %>
-          </div>
+        <!-- Pagination -->
+        <% if @items.respond_to?(:current_page) %>
+          <%= render 'shared/pagination', paginated_collection: @items %>
         <% else %>
           <!-- Load More Button (for future pagination) -->
-          <div class="has-text-centered" style="margin-top: 2rem;">
-            <button class="button is-primary is-large" disabled>
-              <span class="icon">
-                <i class="fas fa-check"></i>
-              </span>
-              <span>All products loaded</span>
-            </button>
+          <div class="level" style="margin-top: 2rem;">
+            <div class="level-left">
+              <div class="level-item">
+                <span class="tag is-light">
+                  All products loaded
+                </span>
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <button class="button is-primary" disabled>
+                  <span class="icon">
+                    <i class="fas fa-check"></i>
+                  </span>
+                  <span>Complete</span>
+                </button>
+              </div>
+            </div>
           </div>
         <% end %>
         
@@ -202,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
     brandFilter.addEventListener('change', filterAndSortItems);
   }
 });
+
 </script>
 
 <style>
@@ -239,4 +249,6 @@ document.addEventListener('DOMContentLoaded', function() {
 .card:hover {
   transform: translateY(-2px);
 }
+
+/* Simple pagination styling - now handled by custom partial */
 </style>
