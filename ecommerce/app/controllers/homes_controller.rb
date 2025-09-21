@@ -1,6 +1,6 @@
 class HomesController < ApplicationController
   def index
-    @categories = Category.all
-    @featured_items = FeaturedItemsService.new(limit: 4).call
+    @featured_items = FeaturedItemsService.new(limit: 5).call
+    @categories = FeaturedCategoriesService.new(limit: 11).call
   end
 end
