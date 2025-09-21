@@ -30,13 +30,11 @@ class SortingService
   end
 
   def products_ascending
-    # Sort by product count - load all records first, then sort in Ruby
     all_records = @model_class.includes(:items).to_a
     all_records.sort_by { |record| record.items.count }
   end
 
   def products_descending
-    # Sort by product count - load all records first, then sort in Ruby
     all_records = @model_class.includes(:items).to_a
     all_records.sort_by { |record| -record.items.count }
   end
