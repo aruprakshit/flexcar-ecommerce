@@ -31,17 +31,12 @@ export default class extends Controller {
       column.style.height = 'auto'
     })
     
+    // Get cards per row from data attribute
     let cardsPerRow = 4 // default for product grids
-    if (columns.length > 0) {
-      const firstColumn = columns[0]
-      if (firstColumn.classList.contains('is-one-third-desktop')) {
-        cardsPerRow = 3 // categories/brands
-      } else if (firstColumn.classList.contains('is-3')) {
-        cardsPerRow = 4 // featured products
-      }
+    const gridElement = this.element
+    if (gridElement.dataset.cardsPerRow) {
+      cardsPerRow = parseInt(gridElement.dataset.cardsPerRow)
     }
-    
-    console.log('Using', cardsPerRow, 'cards per row')
     
     for (let i = 0; i < columns.length; i += cardsPerRow) {
       const row = columns.slice(i, i + cardsPerRow)
@@ -49,7 +44,6 @@ export default class extends Controller {
       
       row.forEach(column => {
         const columnHeight = column.offsetHeight
-        console.log('Column height:', columnHeight)
         if (columnHeight > maxHeight) {
           maxHeight = columnHeight
         }
@@ -57,7 +51,6 @@ export default class extends Controller {
       
       row.forEach(column => {
         column.style.height = maxHeight + 'px'
-        console.log('Set column height to:', maxHeight + 'px')
         
         const card = column.querySelector('.card')
         if (card) {
