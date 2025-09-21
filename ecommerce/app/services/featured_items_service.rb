@@ -29,21 +29,21 @@ class FeaturedItemsService
 
   def items_with_direct_promotions
     Item.joins(:promotions)
-        .where(promotions: Promotion.active)
+        .merge(Promotion.active)
         .pluck(:id)
   end
 
   def items_from_brands_with_promotions
     Item.joins(brand: :promotions)
         .where(promotions: { promotionable_type: 'Brand' })
-        .where('promotions.start_time <= ? AND (promotions.end_time IS NULL OR promotions.end_time >= ?)', Time.current, Time.current)
+        .merge(Promotion.active)
         .pluck(:id)
   end
 
   def items_from_categories_with_promotions
     Item.joins(category: :promotions)
         .where(promotions: { promotionable_type: 'Category' })
-        .where('promotions.start_time <= ? AND (promotions.end_time IS NULL OR promotions.end_time >= ?)', Time.current, Time.current)
+        .merge(Promotion.active)
         .pluck(:id)
   end
 end

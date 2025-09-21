@@ -1,5 +1,5 @@
 <div class="card">
-  <% if item.promotions.active.any? %>
+  <% if item.has_active_promotions? %>
     <div class="card-image">
       <div class="image is-4by3 has-background-light">
         <div class="is-flex is-align-items-center is-justify-content-center" style="height: 100%;">
@@ -37,7 +37,7 @@
       <div class="level-left">
         <div class="level-item">
           <div>
-            <% if item.promotions.active.any? %>
+            <% if item.has_active_promotions? %>
               <span class="has-text-grey-light has-text-decoration-line-through"><%= format_currency_inr(item.price) %></span>
               <span class="has-text-danger has-text-weight-bold"><%= format_currency_inr(item.calculate_discounted_price) %></span>
             <% else %>

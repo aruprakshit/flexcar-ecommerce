@@ -16,6 +16,22 @@ class Item < ApplicationRecord
     sale_type == 'by_weight'
   end
 
+  def has_active_promotions?
+    # Check if item has active promotions through any path:
+    # 1. Direct item promotions
+    # 2. Brand promotions  
+    # 3. Category promotions
+    promotions.active.any? || brand.promotions.active.any? || category.promotions.active.any?
+  end
+
+  def active_promotion_types
+    types = []
+    types << 'direct' if promotions.active.any?
+    types << 'brand' if brand.promotions.active.any?
+    types << 'category' if category.promotions.active.any?
+    types
+  end
+
   def calculate_discounted_price(quantity = 1)
     # Find the best available promotion for this item
     best_promotion = find_best_available_promotion(quantity)
@@ -44,7 +60,6 @@ class Item < ApplicationRecord
   private
 
   def find_best_available_promotion(quantity)
-    # Get all applicable promotions for this item
     applicable_promotions = []
     
     # Item-specific promotions
