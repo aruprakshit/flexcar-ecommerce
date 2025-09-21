@@ -93,57 +93,5 @@
       </div>
     </footer>
 
-    <!-- Equal Height Cards JavaScript -->
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        function equalizeCardHeights() {
-          const productGrids = document.querySelectorAll('.product-grid');
-          
-          productGrids.forEach(function(grid) {
-            const rows = [];
-            const cards = grid.querySelectorAll('.card');
-            
-            // Group cards by row (assuming 4 cards per row on desktop)
-            let currentRow = [];
-            cards.forEach(function(card, index) {
-              currentRow.push(card);
-              
-              // Check if we've completed a row (4 cards) or reached the end
-              if (currentRow.length === 4 || index === cards.length - 1) {
-                rows.push(currentRow);
-                currentRow = [];
-              }
-            });
-            
-            // Equalize heights within each row
-            rows.forEach(function(row) {
-              let maxHeight = 0;
-              
-              // Find the tallest card in the row
-              row.forEach(function(card) {
-                card.style.height = 'auto'; // Reset height
-                const cardHeight = card.offsetHeight;
-                if (cardHeight > maxHeight) {
-                  maxHeight = cardHeight;
-                }
-              });
-              
-              // Set all cards in the row to the same height
-              row.forEach(function(card) {
-                card.style.height = maxHeight + 'px';
-              });
-            });
-          });
-        }
-        
-        // Run on page load
-        equalizeCardHeights();
-        
-        // Run on window resize
-        window.addEventListener('resize', function() {
-          setTimeout(equalizeCardHeights, 100);
-        });
-      });
-    </script>
   </body>
 </html>
