@@ -44,11 +44,13 @@
 <section class="section">
   <div class="container">
     <h2 class="title is-2 has-text-centered mb-6">Featured Products</h2>
-    <div class="product-grid">
+    <div class="product-grid" data-controller="equal-height">
       <div class="columns is-multiline">
         <% @featured_items.each do |item| %>
           <div class="column is-3">
-            <%= render 'items/item_card', item: item %>
+            <div data-equal-height-target="card">
+              <%= render 'items/item_card', item: item %>
+            </div>
           </div>
         <% end %>
       </div>

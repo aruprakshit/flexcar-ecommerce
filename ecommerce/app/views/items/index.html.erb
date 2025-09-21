@@ -94,11 +94,13 @@
   <section class="section">
     <div class="container">
       <% if @items.any? %>
-        <div class="product-grid">
+        <div class="product-grid" data-controller="equal-height">
           <div class="columns is-multiline">
             <% @items.each do |item| %>
               <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
-                <%= render 'item_card', item: item %>
+                <div data-equal-height-target="card">
+                  <%= render 'item_card', item: item %>
+                </div>
               </div>
             <% end %>
           </div>
