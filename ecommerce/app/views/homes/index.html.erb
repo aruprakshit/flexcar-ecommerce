@@ -17,7 +17,7 @@
 </section>
 
 <!-- Featured Categories -->
-<section class="section">
+<section class="section shop-by-category">
   <div class="container">
     <h2 class="title is-2 has-text-centered mb-6">Shop by Category</h2>
     <div class="columns is-multiline">
@@ -27,8 +27,7 @@
             <div class="card">
               <div class="card-content has-text-centered">
                 <div class="content">
-                  <i class="fas fa-tag fa-3x has-text-primary mb-4"></i>
-                  <h4 class="title is-4"><%= category.name %></h4>
+                  <h4 class="title is-4 category-title" title="<%= category.name %>"><%= category.name %></h4>
                   <p class="subtitle is-6 has-text-grey"><%= pluralize(category.items.count, 'item') %></p>
                 </div>
               </div>

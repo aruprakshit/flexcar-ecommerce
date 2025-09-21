@@ -53,6 +53,14 @@
   margin-top: auto !important;
 }
 
+.shop-by-category .category-title {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 100% !important;
+  display: block !important;
+}
+
 .level {
   margin-bottom: 2rem;
 }
