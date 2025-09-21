@@ -91,4 +91,225 @@ RSpec.describe Item, type: :model do
       end
     end
   end
+
+  describe '#has_active_promotions?' do
+    let(:item) { create(:item) }
+    let(:brand) { item.brand }
+    let(:category) { item.category }
+
+    context 'when item has no promotions' do
+      it 'returns false' do
+        expect(item.has_active_promotions?).to be false
+      end
+    end
+
+    context 'when item has direct active promotions' do
+      let!(:direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns true' do
+        expect(item.has_active_promotions?).to be true
+      end
+    end
+
+    context 'when item has brand active promotions' do
+      let!(:brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns true' do
+        expect(item.has_active_promotions?).to be true
+      end
+    end
+
+    context 'when item has category active promotions' do
+      let!(:category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns true' do
+        expect(item.has_active_promotions?).to be true
+      end
+    end
+
+    context 'when item has multiple types of active promotions' do
+      let!(:direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns true' do
+        expect(item.has_active_promotions?).to be true
+      end
+    end
+
+    context 'when item has only inactive promotions' do
+      let!(:inactive_direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 2.days.ago,
+               end_time: 1.day.ago)
+      end
+      let!(:inactive_brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 2.days.ago,
+               end_time: 1.day.ago)
+      end
+      let!(:inactive_category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 2.days.ago,
+               end_time: 1.day.ago)
+      end
+
+      it 'returns false' do
+        expect(item.has_active_promotions?).to be false
+      end
+    end
+  end
+
+  describe '#active_promotion_types' do
+    let(:item) { create(:item) }
+    let(:brand) { item.brand }
+    let(:category) { item.category }
+
+    context 'when item has no promotions' do
+      it 'returns empty array' do
+        expect(item.active_promotion_types).to eq([])
+      end
+    end
+
+    context 'when item has only direct promotions' do
+      let!(:direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns array with direct type' do
+        expect(item.active_promotion_types).to eq(['direct'])
+      end
+    end
+
+    context 'when item has only brand promotions' do
+      let!(:brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns array with brand type' do
+        expect(item.active_promotion_types).to eq(['brand'])
+      end
+    end
+
+    context 'when item has only category promotions' do
+      let!(:category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns array with category type' do
+        expect(item.active_promotion_types).to eq(['category'])
+      end
+    end
+
+    context 'when item has multiple types of promotions' do
+      let!(:direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns array with all active promotion types' do
+        expect(item.active_promotion_types).to contain_exactly('direct', 'brand', 'category')
+      end
+    end
+
+    context 'when item has mixed active and inactive promotions' do
+      let!(:active_direct_promotion) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:inactive_brand_promotion) do
+        create(:promotion,
+               promotionable: brand,
+               start_time: 2.days.ago,
+               end_time: 1.day.ago)
+      end
+      let!(:active_category_promotion) do
+        create(:promotion,
+               promotionable: category,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns only active promotion types' do
+        expect(item.active_promotion_types).to contain_exactly('direct', 'category')
+      end
+    end
+
+    context 'when item has multiple promotions of same type' do
+      let!(:direct_promotion1) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+      let!(:direct_promotion2) do
+        create(:promotion,
+               promotionable: item,
+               start_time: 1.day.ago,
+               end_time: 1.day.from_now)
+      end
+
+      it 'returns type only once (no duplicates)' do
+        expect(item.active_promotion_types).to eq(['direct'])
+      end
+    end
+  end
 end
