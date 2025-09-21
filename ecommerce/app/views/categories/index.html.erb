@@ -52,30 +52,6 @@
                 <div class="card has-hover-shadow">
                 <div class="card-content">
                   <div class="media">
-                    <div class="media-left">
-                      <div class="icon is-large has-text-primary">
-                        <% case category.name.downcase %>
-                        <% when /electronics|phone|laptop|computer/ %>
-                          <i class="fas fa-laptop fa-2x"></i>
-                        <% when /clothing|shirt|dress|fashion/ %>
-                          <i class="fas fa-tshirt fa-2x"></i>
-                        <% when /home|furniture|kitchen/ %>
-                          <i class="fas fa-home fa-2x"></i>
-                        <% when /sports|fitness|gym/ %>
-                          <i class="fas fa-dumbbell fa-2x"></i>
-                        <% when /books|education|learning/ %>
-                          <i class="fas fa-book fa-2x"></i>
-                        <% when /beauty|cosmetics|health/ %>
-                          <i class="fas fa-spa fa-2x"></i>
-                        <% when /toys|games|entertainment/ %>
-                          <i class="fas fa-gamepad fa-2x"></i>
-                        <% when /automotive|car|vehicle/ %>
-                          <i class="fas fa-car fa-2x"></i>
-                        <% else %>
-                          <i class="fas fa-tags fa-2x"></i>
-                        <% end %>
-                      </div>
-                    </div>
                     <div class="media-content">
                       <h2 class="title is-4 has-text-primary">
                         <%= link_to category.name, category_path(category), class: "has-text-primary" %>
