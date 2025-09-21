@@ -4,7 +4,6 @@ export default class extends Controller {
   static targets = ["card"]
 
   connect() {
-    console.log('Equal height controller connected')
     this.equalizeHeights()
     this.setupResizeListener()
   }
@@ -20,7 +19,6 @@ export default class extends Controller {
       Array.from(target.querySelectorAll('.card'))
     )
     
-    console.log('Found cards:', cards.length)
     if (cards.length === 0) return
     
     cards.forEach(card => {
