@@ -44,12 +44,14 @@
 <section class="section">
   <div class="container">
     <h2 class="title is-2 has-text-centered mb-6">Featured Products</h2>
-    <div class="columns is-multiline">
-      <% @featured_items.each do |item| %>
-        <div class="column is-3">
-          <%= render 'items/item_card', item: item %>
-        </div>
-      <% end %>
+    <div class="product-grid">
+      <div class="columns is-multiline">
+        <% @featured_items.each do |item| %>
+          <div class="column is-3">
+            <%= render 'items/item_card', item: item %>
+          </div>
+        <% end %>
+      </div>
     </div>
   </div>
 </section>

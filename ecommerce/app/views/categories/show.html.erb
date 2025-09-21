@@ -102,12 +102,14 @@
         </div>
 
         <!-- Items Grid -->
-        <div class="columns is-multiline" id="items-grid">
-          <% @items.each do |item| %>
-            <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
-              <%= render 'items/item_card', item: item %>
-            </div>
-          <% end %>
+        <div class="product-grid">
+          <div class="columns is-multiline" id="items-grid">
+            <% @items.each do |item| %>
+              <div class="column is-one-quarter-desktop is-one-third-tablet is-half-mobile">
+                <%= render 'items/item_card', item: item %>
+              </div>
+            <% end %>
+          </div>
         </div>
         
         <!-- Load More Button (for future pagination) -->
