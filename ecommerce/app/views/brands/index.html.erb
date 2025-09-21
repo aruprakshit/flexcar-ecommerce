@@ -45,10 +45,11 @@
           </div>
         </div>
         
-        <div class="columns is-multiline">
-          <% @brands.each do |brand| %>
-            <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
-              <div class="card has-hover-shadow">
+        <div class="product-grid" data-controller="equal-height">
+          <div class="columns is-multiline">
+            <% @brands.each do |brand| %>
+              <div class="column is-one-third-desktop is-half-tablet is-full-mobile" data-equal-height-target="card">
+                <div class="card has-hover-shadow">
                 <div class="card-content">
                   <div class="media">
                     <div class="media-content">
@@ -80,6 +81,7 @@
               </div>
             </div>
           <% end %>
+          </div>
         </div>
       <% else %>
         <!-- Empty State -->

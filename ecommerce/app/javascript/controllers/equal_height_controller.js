@@ -4,8 +4,16 @@ export default class extends Controller {
   static targets = ["card"]
 
   connect() {
-    this.equalizeHeights()
+    setTimeout(() => {
+      this.equalizeHeights()
+    }, 100)
     this.setupResizeListener()
+    
+    document.addEventListener('turbo:load', () => {
+      setTimeout(() => {
+        this.equalizeHeights()
+      }, 100)
+    })
   }
 
   disconnect() {
@@ -15,29 +23,48 @@ export default class extends Controller {
   }
 
   equalizeHeights() {
-    const cards = this.cardTargets.flatMap(target => 
-      Array.from(target.querySelectorAll('.card'))
-    )
+    const columns = this.cardTargets
     
-    if (cards.length === 0) return
+    if (columns.length === 0) return
     
-    cards.forEach(card => {
-      card.style.height = 'auto'
+    columns.forEach(column => {
+      column.style.height = 'auto'
     })
     
-    for (let i = 0; i < cards.length; i += 4) {
-      const row = cards.slice(i, i + 4)
+    let cardsPerRow = 4 // default for product grids
+    if (columns.length > 0) {
+      const firstColumn = columns[0]
+      if (firstColumn.classList.contains('is-one-third-desktop')) {
+        cardsPerRow = 3 // categories/brands
+      } else if (firstColumn.classList.contains('is-3')) {
+        cardsPerRow = 4 // featured products
+      }
+    }
+    
+    console.log('Using', cardsPerRow, 'cards per row')
+    
+    for (let i = 0; i < columns.length; i += cardsPerRow) {
+      const row = columns.slice(i, i + cardsPerRow)
       let maxHeight = 0
       
-      row.forEach(card => {
-        const cardHeight = card.offsetHeight
-        if (cardHeight > maxHeight) {
-          maxHeight = cardHeight
+      row.forEach(column => {
+        const columnHeight = column.offsetHeight
+        console.log('Column height:', columnHeight)
+        if (columnHeight > maxHeight) {
+          maxHeight = columnHeight
         }
       })
       
-      row.forEach(card => {
-        card.style.height = maxHeight + 'px'
+      row.forEach(column => {
+        column.style.height = maxHeight + 'px'
+        console.log('Set column height to:', maxHeight + 'px')
+        
+        const card = column.querySelector('.card')
+        if (card) {
+          card.style.height = '100%'
+          card.style.display = 'flex'
+          card.style.flexDirection = 'column'
+        }
       })
     }
   }

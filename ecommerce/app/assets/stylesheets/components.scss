@@ -36,6 +36,23 @@
   margin-top: auto;
 }
 
+// Ensure cards fill their container height
+.product-grid .card {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.product-grid .card .card-content {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.product-grid .card .card-footer {
+  margin-top: auto !important;
+}
+
 .level {
   margin-bottom: 2rem;
 }
