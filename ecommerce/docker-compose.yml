@@ -25,6 +25,7 @@ services:
     environment:
       - RAILS_ENV=development
       - DATABASE_DEV_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_development
+      - DATABASE_TEST_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_test
 
   test:
     build:
@@ -42,6 +43,7 @@ services:
     environment:
       - RAILS_ENV=test
       - DATABASE_TEST_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_test
+      - DATABASE_DEV_URL=postgres://postgres:password@db:5432/flexcar_ecommerce_development
     profiles:
       - test
 
